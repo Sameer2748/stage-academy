@@ -1,0 +1,363 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum Phase {
+  VOLUME
+  TONALITY
+  PAUSE
+  STORYTELLING
+}
+
+enum SessionStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+}
+
+enum EventType {
+  RECORDING_REMINDER
+  WEEKLY_REVIEW
+  PHASE_GRADUATION
+}
+
+// ─── NextAuth Models ─────────────────────────────────────────────────────────
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model NextAuthSession {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+// ─── User ────────────────────────────────────────────────────────────────────
+
+model User {
+  id                 String    @id @default(cuid())
+  email              String    @unique
+  name               String?
+  image              String?
+  emailVerified      DateTime?
+  googleAccessToken  String?   @db.Text
+  googleRefreshToken String?   @db.Text
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  accounts          Account[]
+  nextAuthSessions  NextAuthSession[]
+  courseProgress     CourseProgress?
+  sessions          Session[]
+  weeklyPlans       WeeklyPlan[]
+  dailyLogs         DailyLog[]
+  chatMessages      ChatMessage[]
+  calendarEvents    CalendarEvent[]
+  notifications     Notification[]
+  settings          Settings?
+  videoWatchSessions VideoWatchSession[]
+}
+
+// ─── Course Progress ─────────────────────────────────────────────────────────
+
+model CourseProgress {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  currentPhase   Phase    @default(VOLUME)
+  currentWeek    Int      @default(1)
+  currentDay     Int      @default(1)
+  startDate      DateTime @default(now())
+  phaseStartDate DateTime @default(now())
+  isCompleted    Boolean  @default(false)
+  updatedAt      DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ─── Session (Recording) ─────────────────────────────────────────────────────
+
+model Session {
+  id              String        @id @default(cuid())
+  userId          String
+  date            DateTime
+  weekNumber      Int
+  dayNumber       Int
+  phase           Phase
+  title           String
+  recordingPrompt String        @db.Text
+  s3Key           String
+  s3Url           String
+  fileSize        BigInt?
+  duration        Int?
+  status          SessionStatus @default(PENDING)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transcript   Transcript?
+  aiAnalysis   AIAnalysis?
+  dailyLog     DailyLog?
+  chatMessages ChatMessage[]
+
+  @@index([userId])
+  @@index([date])
+  @@index([userId, date])
+}
+
+// ─── Transcript ──────────────────────────────────────────────────────────────
+
+model Transcript {
+  id              String   @id @default(cuid())
+  sessionId       String   @unique
+  fullText        String   @db.Text
+  deepgramJson    Json?
+  fillerWordCount Json?
+  totalFillers    Int      @default(0)
+  wordsPerMinute  Float    @default(0)
+  sentimentScore  Float    @default(0)
+  confidenceScore Float    @default(0)
+  paragraphs      Json?
+  createdAt       DateTime @default(now())
+
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
+// ─── AI Analysis ─────────────────────────────────────────────────────────────
+
+model AIAnalysis {
+  id                   String   @id @default(cuid())
+  sessionId            String   @unique
+  overallScore         Float
+  volumeScore          Float
+  tonalityScore        Float
+  pauseScore           Float
+  storytellingScore    Float
+  confidenceScore      Float
+  fillerPenalty        Float    @default(0)
+  strengthsList        Json?
+  improvementsList     Json?
+  detailedFeedback     String   @db.Text
+  comparisonToPrevious String?  @db.Text
+  nextSessionTip       String?  @db.Text
+  createdAt            DateTime @default(now())
+
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
+// ─── Weekly Plan ─────────────────────────────────────────────────────────────
+
+model WeeklyPlan {
+  id            String   @id @default(cuid())
+  userId        String
+  weekNumber    Int
+  phase         Phase
+  generatedAt   DateTime @default(now())
+  isAIGenerated Boolean  @default(false)
+  wasAdjusted   Boolean  @default(false)
+  days          Json
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, weekNumber])
+  @@index([userId])
+}
+
+// ─── Daily Log ───────────────────────────────────────────────────────────────
+
+model DailyLog {
+  id               String   @id @default(cuid())
+  userId           String
+  sessionId        String?  @unique
+  date             DateTime
+  weekNumber       Int
+  dayNumber        Int
+  tasksPlanned     Json?
+  tasksCompleted   Json?
+  completionPercent Float   @default(0)
+  fillerCount      Int      @default(0)
+  volumeRating     Int?
+  energyRating     Int?
+  notes            String?  @db.Text
+  mood             Int?
+  createdAt        DateTime @default(now())
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  session Session? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([date])
+  @@index([userId, date])
+}
+
+// ─── Chat Message ────────────────────────────────────────────────────────────
+
+model ChatMessage {
+  id         String      @id @default(cuid())
+  userId     String
+  sessionId  String?
+  role       MessageRole
+  content    String      @db.Text
+  audioS3Key String?
+  createdAt  DateTime    @default(now())
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  session Session? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([sessionId])
+}
+
+// ─── Calendar Event ──────────────────────────────────────────────────────────
+
+model CalendarEvent {
+  id            String    @id @default(cuid())
+  userId        String
+  googleEventId String?
+  title         String
+  scheduledAt   DateTime
+  type          EventType
+  weekNumber    Int?
+  dayNumber     Int?
+  createdAt     DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([scheduledAt])
+}
+
+// ─── Notification ────────────────────────────────────────────────────────────
+
+model Notification {
+  id          String    @id @default(cuid())
+  userId      String
+  title       String
+  body        String    @db.Text
+  type        String
+  isRead      Boolean   @default(false)
+  scheduledAt DateTime?
+  sentAt      DateTime?
+  createdAt   DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, isRead])
+}
+
+// ─── Settings ────────────────────────────────────────────────────────────────
+
+model Settings {
+  id                   String   @id @default(cuid())
+  userId               String   @unique
+  reminderTime         String   @default("09:00")
+  reminderDaysOfWeek   Json     @default("[1,2,3,4,5]")
+  timezone             String   @default("UTC")
+  emailSummaryEnabled  Boolean  @default(true)
+  voiceEnabled         Boolean  @default(true)
+  elevenLabsVoiceId    String?
+  weekStartDay         Int      @default(1)
+  updatedAt            DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ─── Course Module ───────────────────────────────────────────────────────────
+
+model CourseModule {
+  id           String   @id @default(cuid())
+  moduleNumber Int      @unique
+  title        String
+  subtitle     String?
+  description  String?  @db.Text
+  phase        String
+  sortOrder    Int
+  isUnlocked   Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  videos CourseVideo[]
+
+  @@index([sortOrder])
+}
+
+// ─── Course Video ────────────────────────────────────────────────────────────
+
+model CourseVideo {
+  id             String    @id @default(cuid())
+  moduleId       String
+  title          String
+  description    String?   @db.Text
+  driveFileId    String    @unique
+  driveDirectUrl String?
+  duration       Int?
+  sortOrder      Int
+  weekReference  String?
+  isWatched      Boolean   @default(false)
+  watchedAt      DateTime?
+  notes          String?   @db.Text
+  createdAt      DateTime  @default(now())
+
+  module            CourseModule       @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  videoWatchSessions VideoWatchSession[]
+
+  @@index([moduleId])
+  @@index([sortOrder])
+}
+
+// ─── Video Watch Session ─────────────────────────────────────────────────────
+
+model VideoWatchSession {
+  id                   String    @id @default(cuid())
+  userId               String
+  videoId              String
+  startedAt            DateTime  @default(now())
+  completedAt          DateTime?
+  watchDurationSeconds Int       @default(0)
+  completionPercent    Float     @default(0)
+  createdAt            DateTime  @default(now())
+
+  user  User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video CourseVideo @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([videoId])
+  @@index([userId, videoId])
+}
