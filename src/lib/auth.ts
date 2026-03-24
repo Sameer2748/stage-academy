@@ -27,31 +27,37 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async signIn({ user, account }) {
-      const allowedEmails = process.env.ALLOWED_EMAIL;
+      try {
+        const allowedEmails = process.env.ALLOWED_EMAIL;
 
-      if (allowedEmails) {
-        const emailList = allowedEmails.split(",").map((e) => e.trim().toLowerCase());
-        if (!user.email || !emailList.includes(user.email.toLowerCase())) {
-          return "/login?error=AccessDenied";
+        if (allowedEmails) {
+          const emailList = allowedEmails.split(",").map((e) => e.trim().toLowerCase());
+          if (!user.email || !emailList.includes(user.email.toLowerCase())) {
+            console.error("[auth] Access denied for email:", user.email);
+            return "/login?error=AccessDenied";
+          }
         }
-      }
 
-      // Store Google access/refresh tokens in the User model
-      if (account?.provider === "google" && user.id) {
-        try {
-          await prisma.user.update({
-            where: { id: user.id },
-            data: {
-              googleAccessToken: account.access_token ?? null,
-              googleRefreshToken: account.refresh_token ?? null,
-            },
-          });
-        } catch {
-          // User may not exist yet on first sign-in; the adapter will create it
+        // Store Google access/refresh tokens in the User model
+        if (account?.provider === "google" && user.id) {
+          try {
+            await prisma.user.update({
+              where: { id: user.id },
+              data: {
+                googleAccessToken: account.access_token ?? null,
+                googleRefreshToken: account.refresh_token ?? null,
+              },
+            });
+          } catch {
+            // User may not exist yet on first sign-in; the adapter will create it
+          }
         }
-      }
 
-      return true;
+        return true;
+      } catch (err) {
+        console.error("[auth] signIn callback error:", err);
+        return true; // Still allow sign-in even if token storage fails
+      }
     },
     async jwt({ token, user, account }) {
       if (user) {
