@@ -54,6 +54,8 @@ interface DailyPlan {
   journalRecorded: boolean;
   journalDuration: number;
   journalUrl?: string;
+  journalS3Key?: string;
+  journalType?: "audio" | "video";
 }
 
 // ─── Constants ───────────────────────────────────────────────────────
@@ -65,37 +67,37 @@ const CATEGORY_CONFIG: Record<
   work: {
     label: "Work",
     dot: "bg-blue-400",
-    bg: "bg-blue-500/10",
-    border: "border-blue-500/20",
-    text: "text-blue-400",
+    bg: "bg-blue-50",
+    border: "border-blue-200",
+    text: "text-blue-600",
   },
   personal: {
     label: "Personal",
     dot: "bg-purple-400",
-    bg: "bg-purple-500/10",
-    border: "border-purple-500/20",
-    text: "text-purple-400",
+    bg: "bg-purple-50",
+    border: "border-purple-200",
+    text: "text-purple-600",
   },
   learning: {
     label: "Learning",
     dot: "bg-indigo-400",
-    bg: "bg-indigo-500/10",
-    border: "border-indigo-500/20",
-    text: "text-indigo-400",
+    bg: "bg-indigo-50",
+    border: "border-indigo-200",
+    text: "text-indigo-600",
   },
   health: {
     label: "Health",
     dot: "bg-emerald-400",
-    bg: "bg-emerald-500/10",
-    border: "border-emerald-500/20",
-    text: "text-emerald-400",
+    bg: "bg-emerald-50",
+    border: "border-emerald-200",
+    text: "text-emerald-600",
   },
   other: {
     label: "Other",
     dot: "bg-zinc-400",
     bg: "bg-zinc-500/10",
     border: "border-zinc-500/20",
-    text: "text-zinc-400",
+    text: "text-slate-500",
   },
 };
 
@@ -231,6 +233,7 @@ export default function DailyPlannerPage() {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animFrameRef = useRef<number | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const videoPreviewRef = useRef<HTMLVideoElement | null>(null);
 
   const dateStr = formatDate(selectedDate);
 
@@ -238,13 +241,33 @@ export default function DailyPlannerPage() {
   useEffect(() => {
     const loaded = loadPlan(dateStr);
     setPlan(loaded);
-    setMediaUrl(loaded.journalUrl || null);
     setHasRecorded(loaded.journalRecorded);
     setIsRecording(false);
     setIsPaused(false);
     setRecordingTime(0);
     setShowAddForm(false);
     setShowAddRef(false);
+    if (loaded.journalType) setRecordingMode(loaded.journalType);
+
+    // If we have an S3 key, fetch a fresh presigned URL for playback
+    if (loaded.journalS3Key) {
+      fetch("/api/s3/download-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: loaded.journalS3Key }),
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.downloadUrl) setMediaUrl(data.downloadUrl);
+          else setMediaUrl(null);
+        })
+        .catch(() => setMediaUrl(null));
+    } else if (loaded.journalUrl) {
+      // Fallback to stored URL (legacy / public bucket)
+      setMediaUrl(loaded.journalUrl);
+    } else {
+      setMediaUrl(null);
+    }
   }, [dateStr]);
 
   // Auto-save
@@ -356,7 +379,7 @@ export default function DailyPlannerPage() {
       animFrameRef.current = requestAnimationFrame(draw);
       analyser!.getByteTimeDomainData(dataArray);
 
-      ctx!.fillStyle = "#111";
+      ctx!.fillStyle = "#f1f5f9";
       ctx!.fillRect(0, 0, canvas!.width, canvas!.height);
 
       ctx!.lineWidth = 2;
@@ -416,36 +439,39 @@ export default function DailyPlannerPage() {
         setHasRecorded(true);
         stream.getTracks().forEach((t) => t.stop());
         streamRef.current = null;
+        if (videoPreviewRef.current) videoPreviewRef.current.srcObject = null;
         if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
 
         // Upload to S3
         setIsUploading(true);
         try {
-          const fileName = `journal_${selectedDate}.${recordingMode === "video" ? "webm" : "webm"}`;
+          const fileName = `journal_${formatDate(selectedDate)}.webm`;
           const res = await fetch("/api/s3/upload-url", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ fileName, contentType: mimeType, folder: `journals/${selectedDate}` }),
+            body: JSON.stringify({ fileName, contentType: mimeType, folder: `journals/${formatDate(selectedDate)}` }),
           });
           if (res.ok) {
-            const { uploadUrl, publicUrl } = await res.json();
+            const { uploadUrl, publicUrl, key } = await res.json();
             await fetch(uploadUrl, {
               method: "PUT",
               headers: { "Content-Type": mimeType },
               body: blob,
             });
-            setMediaUrl(publicUrl);
             setPlan((prev) => ({
               ...prev,
               journalRecorded: true,
               journalDuration: recordingTime,
               journalUrl: publicUrl,
+              journalS3Key: key,
+              journalType: recordingMode,
             }));
           } else {
             setPlan((prev) => ({
               ...prev,
               journalRecorded: true,
               journalDuration: recordingTime,
+              journalType: recordingMode,
             }));
           }
         } catch (err) {
@@ -454,10 +480,17 @@ export default function DailyPlannerPage() {
             ...prev,
             journalRecorded: true,
             journalDuration: recordingTime,
+            journalType: recordingMode,
           }));
         }
         setIsUploading(false);
       };
+
+      // Show live video preview if recording video
+      if (recordingMode === "video" && videoPreviewRef.current) {
+        videoPreviewRef.current.srcObject = stream;
+        videoPreviewRef.current.play().catch(() => {});
+      }
 
       recorder.start(100);
       setIsRecording(true);
@@ -519,13 +552,13 @@ export default function DailyPlannerPage() {
   // ─── Render ────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
+    <div className="min-h-screen bg-white text-slate-900">
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* ─── Header / Date Selector ─────────────────────── */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-white">Daily Planner</h1>
-            <p className="text-zinc-500 text-sm mt-1">
+            <h1 className="text-2xl font-bold text-slate-900">Daily Planner</h1>
+            <p className="text-slate-400 text-sm mt-1">
               Plan your day, track your progress
             </p>
           </div>
@@ -539,13 +572,13 @@ export default function DailyPlannerPage() {
               <ChevronLeft className="w-4 h-4" />
             </Button>
 
-            <div className="flex items-center gap-2 bg-[#111] border border-[#2a2a2a] rounded-lg px-4 py-2">
-              <Calendar className="w-4 h-4 text-zinc-500" />
+            <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-4 py-2">
+              <Calendar className="w-4 h-4 text-slate-400" />
               <input
                 type="date"
                 value={dateStr}
                 onChange={(e) => setSelectedDate(new Date(e.target.value + "T12:00:00"))}
-                className="bg-transparent text-white text-sm outline-none [color-scheme:dark]"
+                className="bg-transparent text-slate-900 text-sm outline-none [color-scheme:dark]"
               />
             </div>
 
@@ -569,7 +602,7 @@ export default function DailyPlannerPage() {
           </div>
         </div>
 
-        <p className="text-zinc-400 text-sm mb-6">
+        <p className="text-slate-500 text-sm mb-6">
           {formatDisplayDate(selectedDate)}
         </p>
 
@@ -578,14 +611,14 @@ export default function DailyPlannerPage() {
           {/* ─── Left: Timeline + Journal (2 cols) ─────── */}
           <div className="lg:col-span-2 space-y-6">
             {/* ─── Timeline ─────────────────────────────── */}
-            <div className="bg-[#111] border border-[#2a2a2a] rounded-xl p-6">
+            <div className="bg-white border border-slate-200 rounded-xl p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-5 h-5 text-indigo-400" />
-                  <h2 className="text-lg font-semibold text-white">
+                  <Clock className="w-5 h-5 text-indigo-600" />
+                  <h2 className="text-lg font-semibold text-slate-900">
                     Schedule
                   </h2>
-                  <span className="text-zinc-500 text-sm">
+                  <span className="text-slate-400 text-sm">
                     ({plan.blocks.length} blocks)
                   </span>
                 </div>
@@ -616,10 +649,10 @@ export default function DailyPlannerPage() {
                     transition={{ duration: 0.2 }}
                     className="overflow-hidden"
                   >
-                    <div className="bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg p-4 mb-6 space-y-4">
+                    <div className="bg-white border border-slate-200 rounded-lg p-4 mb-6 space-y-4">
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         <div>
-                          <label className="block text-xs text-zinc-500 mb-1">
+                          <label className="block text-xs text-slate-400 mb-1">
                             Start Time
                           </label>
                           <input
@@ -631,11 +664,11 @@ export default function DailyPlannerPage() {
                                 startTime: e.target.value,
                               }))
                             }
-                            className="w-full bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-indigo-500 [color-scheme:dark]"
+                            className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 outline-none focus:border-indigo-500 [color-scheme:dark]"
                           />
                         </div>
                         <div>
-                          <label className="block text-xs text-zinc-500 mb-1">
+                          <label className="block text-xs text-slate-400 mb-1">
                             End Time
                           </label>
                           <input
@@ -647,11 +680,11 @@ export default function DailyPlannerPage() {
                                 endTime: e.target.value,
                               }))
                             }
-                            className="w-full bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-indigo-500 [color-scheme:dark]"
+                            className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 outline-none focus:border-indigo-500 [color-scheme:dark]"
                           />
                         </div>
                         <div className="col-span-2">
-                          <label className="block text-xs text-zinc-500 mb-1">
+                          <label className="block text-xs text-slate-400 mb-1">
                             Category
                           </label>
                           <select
@@ -662,7 +695,7 @@ export default function DailyPlannerPage() {
                                 category: e.target.value as Category,
                               }))
                             }
-                            className="w-full bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-indigo-500 [color-scheme:dark]"
+                            className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 outline-none focus:border-indigo-500 [color-scheme:dark]"
                           >
                             {CATEGORIES.map((c) => (
                               <option key={c} value={c}>
@@ -673,7 +706,7 @@ export default function DailyPlannerPage() {
                         </div>
                       </div>
                       <div>
-                        <label className="block text-xs text-zinc-500 mb-1">
+                        <label className="block text-xs text-slate-400 mb-1">
                           Title
                         </label>
                         <input
@@ -689,13 +722,13 @@ export default function DailyPlannerPage() {
                           onKeyDown={(e) => {
                             if (e.key === "Enter") addBlock();
                           }}
-                          className="w-full bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-indigo-500 placeholder:text-zinc-600"
+                          className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 outline-none focus:border-indigo-500 placeholder:text-slate-400"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs text-zinc-500 mb-1">
+                        <label className="block text-xs text-slate-400 mb-1">
                           Description{" "}
-                          <span className="text-zinc-600">(optional)</span>
+                          <span className="text-slate-400">(optional)</span>
                         </label>
                         <textarea
                           placeholder="Add details..."
@@ -707,7 +740,7 @@ export default function DailyPlannerPage() {
                             }))
                           }
                           rows={2}
-                          className="w-full bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-indigo-500 placeholder:text-zinc-600 resize-none"
+                          className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 outline-none focus:border-indigo-500 placeholder:text-slate-400 resize-none"
                         />
                       </div>
                       <div className="flex justify-end">
@@ -723,18 +756,18 @@ export default function DailyPlannerPage() {
               {/* ─── Time Blocks ────────────────────────── */}
               {plan.blocks.length === 0 ? (
                 <div className="text-center py-16">
-                  <Clock className="w-10 h-10 text-zinc-700 mx-auto mb-3" />
-                  <p className="text-zinc-500 text-sm">
+                  <Clock className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+                  <p className="text-slate-400 text-sm">
                     No blocks scheduled yet
                   </p>
-                  <p className="text-zinc-600 text-xs mt-1">
+                  <p className="text-slate-400 text-xs mt-1">
                     Add your first time block to start planning
                   </p>
                 </div>
               ) : (
                 <div className="relative">
                   {/* Vertical line */}
-                  <div className="absolute left-[88px] top-0 bottom-0 w-px bg-[#2a2a2a] hidden sm:block" />
+                  <div className="absolute left-[88px] top-0 bottom-0 w-px bg-slate-200 hidden sm:block" />
 
                   <AnimatePresence mode="popLayout">
                     {plan.blocks.map((block) => {
@@ -755,27 +788,27 @@ export default function DailyPlannerPage() {
                         >
                           {/* Time column */}
                           <div className="w-20 flex-shrink-0 text-right pt-3 hidden sm:block">
-                            <p className="text-xs font-mono text-zinc-400">
+                            <p className="text-xs font-mono text-slate-500">
                               {formatTime12(block.startTime)}
                             </p>
-                            <p className="text-xs font-mono text-zinc-600">
+                            <p className="text-xs font-mono text-slate-400">
                               {formatTime12(block.endTime)}
                             </p>
                           </div>
 
                           {/* Dot on timeline */}
-                          <div className="relative flex-shrink-0 hidden sm:flex items-start pt-3">
+                          <div className="relative flex-shrink-0 hidden sm:flex items-center" style={{ height: '44px' }}>
                             <div
-                              className={`w-3 h-3 rounded-full ${cat.dot} ring-4 ring-[#111] z-10`}
+                              className={`w-3 h-3 rounded-full ${cat.dot} ring-4 ring-white z-10`}
                             />
                           </div>
 
                           {/* Card */}
                           <div
-                            className={`flex-1 bg-[#0a0a0a] border rounded-lg p-4 transition-all ${
+                            className={`flex-1 bg-white border rounded-lg p-4 transition-all ${
                               block.completed
-                                ? "border-[#1a1a1a] opacity-60"
-                                : "border-[#2a2a2a] hover:border-[#3a3a3a]"
+                                ? "border-slate-200 opacity-60"
+                                : "border-slate-200 hover:border-slate-300"
                             }`}
                           >
                             <div className="flex items-start justify-between gap-3">
@@ -786,9 +819,9 @@ export default function DailyPlannerPage() {
                                   className="mt-0.5 flex-shrink-0"
                                 >
                                   {block.completed ? (
-                                    <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                                    <CheckCircle2 className="w-5 h-5 text-emerald-600" />
                                   ) : (
-                                    <Circle className="w-5 h-5 text-zinc-600 hover:text-zinc-400 transition-colors" />
+                                    <Circle className="w-5 h-5 text-slate-400 hover:text-slate-500 transition-colors" />
                                   )}
                                 </button>
 
@@ -797,8 +830,8 @@ export default function DailyPlannerPage() {
                                     <p
                                       className={`text-sm font-medium ${
                                         block.completed
-                                          ? "text-zinc-500 line-through"
-                                          : "text-white"
+                                          ? "text-slate-400 line-through"
+                                          : "text-slate-900"
                                       }`}
                                     >
                                       {block.title}
@@ -814,18 +847,18 @@ export default function DailyPlannerPage() {
                                   </div>
 
                                   {/* Mobile time display */}
-                                  <p className="text-xs font-mono text-zinc-500 mt-1 sm:hidden">
+                                  <p className="text-xs font-mono text-slate-400 mt-1 sm:hidden">
                                     {formatTime12(block.startTime)} -{" "}
                                     {formatTime12(block.endTime)}
                                   </p>
 
                                   {block.description && (
-                                    <p className="text-xs text-zinc-500 mt-1 line-clamp-2">
+                                    <p className="text-xs text-slate-400 mt-1 line-clamp-2">
                                       {block.description}
                                     </p>
                                   )}
 
-                                  <p className="text-xs text-zinc-600 mt-1">
+                                  <p className="text-xs text-slate-400 mt-1">
                                     {minutesToDisplay(duration)}
                                   </p>
                                 </div>
@@ -834,7 +867,7 @@ export default function DailyPlannerPage() {
                               {/* Delete */}
                               <button
                                 onClick={() => deleteBlock(block.id)}
-                                className="text-zinc-700 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100 flex-shrink-0"
+                                className="text-slate-300 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100 flex-shrink-0"
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>
@@ -849,14 +882,14 @@ export default function DailyPlannerPage() {
             </div>
 
             {/* ─── Journal Recording ──────────────────────── */}
-            <div className="bg-[#111] border border-[#2a2a2a] rounded-xl p-6">
+            <div className="bg-white border border-slate-200 rounded-xl p-6">
               <div className="flex items-center gap-2 mb-4">
-                <Video className="w-5 h-5 text-purple-400" />
-                <h2 className="text-lg font-semibold text-white">
+                <Video className="w-5 h-5 text-purple-600" />
+                <h2 className="text-lg font-semibold text-slate-900">
                   Daily Journal
                 </h2>
               </div>
-              <p className="text-zinc-500 text-sm mb-5 italic">
+              <p className="text-slate-400 text-sm mb-5 italic">
                 &ldquo;What did you accomplish today? What could be better
                 tomorrow?&rdquo;
               </p>
@@ -868,8 +901,8 @@ export default function DailyPlannerPage() {
                     onClick={() => setRecordingMode("audio")}
                     className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border transition-all ${
                       recordingMode === "audio"
-                        ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-400"
-                        : "bg-transparent border-[#2a2a2a] text-zinc-500 hover:text-zinc-300"
+                        ? "bg-indigo-50 border-indigo-200 text-indigo-600"
+                        : "bg-transparent border-slate-200 text-slate-400 hover:text-slate-600"
                     }`}
                   >
                     <Mic className="w-3.5 h-3.5" /> Audio
@@ -878,8 +911,8 @@ export default function DailyPlannerPage() {
                     onClick={() => setRecordingMode("video")}
                     className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border transition-all ${
                       recordingMode === "video"
-                        ? "bg-purple-500/10 border-purple-500/30 text-purple-400"
-                        : "bg-transparent border-[#2a2a2a] text-zinc-500 hover:text-zinc-300"
+                        ? "bg-purple-50 border-purple-200 text-purple-600"
+                        : "bg-transparent border-slate-200 text-slate-400 hover:text-slate-600"
                     }`}
                   >
                     <Video className="w-3.5 h-3.5" /> Video
@@ -895,19 +928,32 @@ export default function DailyPlannerPage() {
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
                       <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500" />
                     </span>
-                    <span className="text-red-400 text-sm font-medium">
+                    <span className="text-red-600 text-sm font-medium">
                       Recording
                     </span>
-                    <span className="text-zinc-400 font-mono text-sm">
+                    <span className="text-slate-500 font-mono text-sm">
                       {formatSeconds(recordingTime)}
                     </span>
                   </div>
-                  <canvas
-                    ref={canvasRef}
-                    width={600}
-                    height={80}
-                    className="w-full h-20 rounded-lg border border-[#2a2a2a]"
-                  />
+                  {/* Live video preview */}
+                  {recordingMode === "video" && (
+                    <video
+                      ref={videoPreviewRef}
+                      autoPlay
+                      muted
+                      playsInline
+                      className="w-full max-h-64 rounded-lg border border-slate-200 bg-black object-cover"
+                    />
+                  )}
+                  {/* Audio waveform (only for audio mode) */}
+                  {recordingMode === "audio" && (
+                    <canvas
+                      ref={canvasRef}
+                      width={600}
+                      height={80}
+                      className="w-full h-20 rounded-lg border border-slate-200"
+                    />
+                  )}
                   <div className="flex items-center gap-2">
                     <Button
                       variant="secondary"
@@ -939,32 +985,33 @@ export default function DailyPlannerPage() {
               {mediaUrl && !isRecording && (
                 <div className="mb-4 space-y-3">
                   {isUploading && (
-                    <div className="flex items-center gap-2 text-xs text-indigo-400">
+                    <div className="flex items-center gap-2 text-xs text-indigo-600">
                       <Clock className="w-3.5 h-3.5 animate-spin" /> Uploading to cloud...
                     </div>
                   )}
-                  <div className="flex items-center gap-2 text-sm text-emerald-400">
+                  <div className="flex items-center gap-2 text-sm text-emerald-600">
                     <Check className="w-4 h-4" /> Journal recorded (
                     {formatSeconds(recordingTime || plan.journalDuration)})
                   </div>
-                  {recordingMode === "video" ? (
+                  {(plan.journalType || recordingMode) === "video" ? (
                     <video
                       src={mediaUrl}
                       controls
-                      className="w-full max-h-64 rounded-lg border border-[#2a2a2a]"
+                      playsInline
+                      className="w-full max-h-64 rounded-lg border border-slate-200 bg-black"
                     />
                   ) : (
                     <audio
                       src={mediaUrl}
                       controls
-                      className="w-full [&::-webkit-media-controls-panel]:bg-[#1a1a1a]"
+                      className="w-full [&::-webkit-media-controls-panel]:bg-slate-100"
                     />
                   )}
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      if (mediaUrl) URL.revokeObjectURL(mediaUrl);
+                      if (mediaUrl && mediaUrl.startsWith("blob:")) URL.revokeObjectURL(mediaUrl);
                       setMediaUrl(null);
                       setHasRecorded(false);
                       setRecordingTime(0);
@@ -972,6 +1019,9 @@ export default function DailyPlannerPage() {
                         ...prev,
                         journalRecorded: false,
                         journalDuration: 0,
+                        journalUrl: undefined,
+                        journalS3Key: undefined,
+                        journalType: undefined,
                       }));
                     }}
                   >
@@ -998,10 +1048,10 @@ export default function DailyPlannerPage() {
 
               {/* Previous recording indicator */}
               {!mediaUrl && !isRecording && plan.journalRecorded && (
-                <p className="text-xs text-zinc-500 mt-3">
+                <p className="text-xs text-slate-400 mt-3">
                   <Check className="w-3 h-3 inline mr-1 text-emerald-500" />
                   Previously recorded ({formatSeconds(plan.journalDuration)}).
-                  Media not persisted across sessions.
+                  {plan.journalS3Key ? " Loading from cloud..." : " Media not persisted across sessions."}
                 </p>
               )}
             </div>
@@ -1010,10 +1060,10 @@ export default function DailyPlannerPage() {
           {/* ─── Right Sidebar ────────────────────────────── */}
           <div className="space-y-6">
             {/* ─── Daily Stats ────────────────────────────── */}
-            <div className="bg-[#111] border border-[#2a2a2a] rounded-xl p-6">
+            <div className="bg-white border border-slate-200 rounded-xl p-6">
               <div className="flex items-center gap-2 mb-5">
-                <BarChart3 className="w-5 h-5 text-indigo-400" />
-                <h2 className="text-lg font-semibold text-white">
+                <BarChart3 className="w-5 h-5 text-indigo-600" />
+                <h2 className="text-lg font-semibold text-slate-900">
                   Daily Stats
                 </h2>
               </div>
@@ -1022,12 +1072,12 @@ export default function DailyPlannerPage() {
                 {/* Completion */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-zinc-400">Completion</span>
-                    <span className="text-sm font-semibold text-white">
+                    <span className="text-sm text-slate-500">Completion</span>
+                    <span className="text-sm font-semibold text-slate-900">
                       {completionPct}%
                     </span>
                   </div>
-                  <div className="w-full h-2 bg-[#1a1a1a] rounded-full overflow-hidden">
+                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                     <motion.div
                       className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"
                       initial={{ width: 0 }}
@@ -1039,52 +1089,52 @@ export default function DailyPlannerPage() {
 
                 {/* Block counts */}
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg p-3 text-center">
-                    <p className="text-2xl font-bold text-white">
+                  <div className="bg-white border border-slate-200 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-slate-900">
                       {totalBlocks}
                     </p>
-                    <p className="text-xs text-zinc-500">Total</p>
+                    <p className="text-xs text-slate-400">Total</p>
                   </div>
-                  <div className="bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg p-3 text-center">
-                    <p className="text-2xl font-bold text-emerald-400">
+                  <div className="bg-white border border-slate-200 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-emerald-600">
                       {completedBlocks}
                     </p>
-                    <p className="text-xs text-zinc-500">Done</p>
+                    <p className="text-xs text-slate-400">Done</p>
                   </div>
                 </div>
 
                 {/* Time tracked */}
-                <div className="flex items-center justify-between bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg p-3">
+                <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg p-3">
                   <div className="flex items-center gap-2">
-                    <Timer className="w-4 h-4 text-zinc-500" />
-                    <span className="text-sm text-zinc-400">
+                    <Timer className="w-4 h-4 text-slate-400" />
+                    <span className="text-sm text-slate-500">
                       Time Tracked
                     </span>
                   </div>
-                  <span className="text-sm font-semibold text-white">
+                  <span className="text-sm font-semibold text-slate-900">
                     {minutesToDisplay(trackedMinutes)}
                   </span>
                 </div>
 
                 {/* Journal status */}
-                <div className="flex items-center justify-between bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg p-3">
+                <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg p-3">
                   <div className="flex items-center gap-2">
-                    <Video className="w-4 h-4 text-zinc-500" />
-                    <span className="text-sm text-zinc-400">Journal</span>
+                    <Video className="w-4 h-4 text-slate-400" />
+                    <span className="text-sm text-slate-500">Journal</span>
                   </div>
                   {plan.journalRecorded || hasRecorded ? (
-                    <span className="flex items-center gap-1 text-xs text-emerald-400">
+                    <span className="flex items-center gap-1 text-xs text-emerald-600">
                       <Check className="w-3.5 h-3.5" /> Recorded
                     </span>
                   ) : (
-                    <span className="text-xs text-zinc-600">Not recorded</span>
+                    <span className="text-xs text-slate-400">Not recorded</span>
                   )}
                 </div>
 
                 {/* Category breakdown */}
                 {totalBlocks > 0 && (
                   <div>
-                    <p className="text-xs text-zinc-500 mb-2 uppercase tracking-wider">
+                    <p className="text-xs text-slate-400 mb-2 uppercase tracking-wider">
                       By Category
                     </p>
                     <div className="space-y-1.5">
@@ -1103,11 +1153,11 @@ export default function DailyPlannerPage() {
                               <span
                                 className={`w-2 h-2 rounded-full ${cfg.dot}`}
                               />
-                              <span className="text-xs text-zinc-400">
+                              <span className="text-xs text-slate-500">
                                 {cfg.label}
                               </span>
                             </div>
-                            <span className="text-xs text-zinc-500">
+                            <span className="text-xs text-slate-400">
                               {count}
                             </span>
                           </div>
@@ -1120,11 +1170,11 @@ export default function DailyPlannerPage() {
             </div>
 
             {/* ─── References ─────────────────────────────── */}
-            <div className="bg-[#111] border border-[#2a2a2a] rounded-xl p-6">
+            <div className="bg-white border border-slate-200 rounded-xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-indigo-400" />
-                  <h2 className="text-lg font-semibold text-white">
+                  <FileText className="w-5 h-5 text-indigo-600" />
+                  <h2 className="text-lg font-semibold text-slate-900">
                     References
                   </h2>
                 </div>
@@ -1151,7 +1201,7 @@ export default function DailyPlannerPage() {
                     transition={{ duration: 0.2 }}
                     className="overflow-hidden"
                   >
-                    <div className="bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg p-3 mb-4 space-y-2">
+                    <div className="bg-white border border-slate-200 rounded-lg p-3 mb-4 space-y-2">
                       <input
                         type="text"
                         placeholder="Title"
@@ -1159,7 +1209,7 @@ export default function DailyPlannerPage() {
                         onChange={(e) =>
                           setNewRef((r) => ({ ...r, title: e.target.value }))
                         }
-                        className="w-full bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-indigo-500 placeholder:text-zinc-600"
+                        className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 outline-none focus:border-indigo-500 placeholder:text-slate-400"
                       />
                       <input
                         type="url"
@@ -1168,7 +1218,7 @@ export default function DailyPlannerPage() {
                         onChange={(e) =>
                           setNewRef((r) => ({ ...r, url: e.target.value }))
                         }
-                        className="w-full bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-indigo-500 placeholder:text-zinc-600"
+                        className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 outline-none focus:border-indigo-500 placeholder:text-slate-400"
                       />
                       <textarea
                         placeholder="Note (optional)"
@@ -1177,7 +1227,7 @@ export default function DailyPlannerPage() {
                           setNewRef((r) => ({ ...r, note: e.target.value }))
                         }
                         rows={2}
-                        className="w-full bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-indigo-500 placeholder:text-zinc-600 resize-none"
+                        className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 outline-none focus:border-indigo-500 placeholder:text-slate-400 resize-none"
                       />
                       <Button
                         size="sm"
@@ -1192,7 +1242,7 @@ export default function DailyPlannerPage() {
               </AnimatePresence>
 
               {plan.references.length === 0 ? (
-                <p className="text-zinc-600 text-sm text-center py-6">
+                <p className="text-slate-400 text-sm text-center py-6">
                   No references yet
                 </p>
               ) : (
@@ -1206,41 +1256,41 @@ export default function DailyPlannerPage() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ duration: 0.15 }}
-                        className="group bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg p-3"
+                        className="group bg-white border border-slate-200 rounded-lg p-3"
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-1.5">
                               {ref.url ? (
-                                <Link2 className="w-3.5 h-3.5 text-indigo-400 flex-shrink-0" />
+                                <Link2 className="w-3.5 h-3.5 text-indigo-600 flex-shrink-0" />
                               ) : (
-                                <FileText className="w-3.5 h-3.5 text-zinc-500 flex-shrink-0" />
+                                <FileText className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
                               )}
                               {ref.url ? (
                                 <a
                                   href={ref.url}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-sm text-indigo-400 hover:text-indigo-300 truncate flex items-center gap-1"
+                                  className="text-sm text-indigo-600 hover:text-indigo-500 truncate flex items-center gap-1"
                                 >
                                   {ref.title}
                                   <ExternalLink className="w-3 h-3 flex-shrink-0" />
                                 </a>
                               ) : (
-                                <p className="text-sm text-white truncate">
+                                <p className="text-sm text-slate-900 truncate">
                                   {ref.title}
                                 </p>
                               )}
                             </div>
                             {ref.note && (
-                              <p className="text-xs text-zinc-500 mt-1 line-clamp-2">
+                              <p className="text-xs text-slate-400 mt-1 line-clamp-2">
                                 {ref.note}
                               </p>
                             )}
                           </div>
                           <button
                             onClick={() => deleteReference(ref.id)}
-                            className="text-zinc-700 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100 flex-shrink-0"
+                            className="text-slate-300 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100 flex-shrink-0"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>

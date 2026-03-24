@@ -66,10 +66,10 @@ const phaseColors: Record<string, string> = {
 };
 
 const phaseBorderColors: Record<string, string> = {
-  VOLUME: "border-blue-500/30",
-  TONALITY: "border-purple-500/30",
-  PAUSE: "border-orange-500/30",
-  STORYTELLING: "border-emerald-500/30",
+  VOLUME: "border-blue-200",
+  TONALITY: "border-purple-200",
+  PAUSE: "border-orange-200",
+  STORYTELLING: "border-emerald-200",
 };
 
 const phaseVariant: Record<string, "phase-volume" | "phase-tonality" | "phase-pause" | "phase-storytelling"> = {
@@ -242,7 +242,7 @@ export default function ProgressPage() {
     <div className="flex-1 space-y-8 p-8 pt-6">
       <div>
         <h2 className="text-3xl font-bold tracking-tight">Progress</h2>
-        <p className="text-sm text-zinc-500 mt-1">
+        <p className="text-sm text-slate-400 mt-1">
           Your 12-week journey through Stage Academy
         </p>
       </div>
@@ -256,10 +256,10 @@ export default function ProgressPage() {
         const overallPct = totalVideos > 0 ? (totalWatched / totalVideos) * 100 : 0;
 
         return (
-          <Card className="p-6 bg-[#111111] border-[#2a2a2a]">
+          <Card className="p-6 bg-white border-slate-200">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-sm">Course Video Progress</h3>
-              <span className="text-sm text-zinc-400 font-medium">{totalWatched}/{totalVideos} watched</span>
+              <span className="text-sm text-slate-500 font-medium">{totalWatched}/{totalVideos} watched</span>
             </div>
             <Progress value={overallPct} className="h-2 mb-4" />
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -267,11 +267,11 @@ export default function ProgressPage() {
                 const watched = mod.videos.filter((v) => watchedVideos.has(v.driveFileId)).length;
                 const pct = mod.videoCount > 0 ? (watched / mod.videoCount) * 100 : 0;
                 return (
-                  <div key={mod.folderId} className="p-3 rounded-lg bg-[#0a0a0a] border border-[#2a2a2a]">
-                    <p className="text-[10px] text-zinc-500 truncate mb-1">Module {mod.moduleNumber}</p>
+                  <div key={mod.folderId} className="p-3 rounded-lg bg-white border border-slate-200">
+                    <p className="text-[10px] text-slate-400 truncate mb-1">Module {mod.moduleNumber}</p>
                     <div className="flex items-end gap-1">
-                      <span className="text-lg font-bold text-white">{watched}</span>
-                      <span className="text-xs text-zinc-600 mb-0.5">/{mod.videoCount}</span>
+                      <span className="text-lg font-bold text-slate-900">{watched}</span>
+                      <span className="text-xs text-slate-400 mb-0.5">/{mod.videoCount}</span>
                     </div>
                     <Progress value={pct} className="h-1 mt-1.5" />
                   </div>
@@ -283,7 +283,7 @@ export default function ProgressPage() {
       })()}
 
       {/* 12-Week Timeline */}
-      <Card className="p-6 bg-[#111111] border-[#2a2a2a]">
+      <Card className="p-6 bg-white border-slate-200">
         <h3 className="font-semibold text-sm mb-4">12-Week Overview</h3>
         <div className="grid grid-cols-12 gap-2">
           {weeks.map((week) => {
@@ -295,26 +295,26 @@ export default function ProgressPage() {
                   isCurrent
                     ? `bg-gradient-to-b ${phaseColors[week.phase]} bg-opacity-20 ring-2 ring-white/20`
                     : week.status === "completed"
-                      ? "bg-[#1a1a1a]"
-                      : "bg-[#0a0a0a]"
+                      ? "bg-slate-100"
+                      : "bg-white"
                 }`}
               >
-                <span className="text-[10px] text-zinc-500 mb-1">W{week.weekNumber}</span>
+                <span className="text-[10px] text-slate-400 mb-1">W{week.weekNumber}</span>
                 {week.status === "completed" ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                 ) : isCurrent ? (
-                  <Play className="w-4 h-4 text-white fill-white" />
+                  <Play className="w-4 h-4 text-slate-900 fill-white" />
                 ) : (
-                  <Circle className="w-4 h-4 text-zinc-700" />
+                  <Circle className="w-4 h-4 text-slate-300" />
                 )}
                 {week.avgScore > 0 && (
-                  <span className="text-[10px] text-zinc-400 mt-1">
+                  <span className="text-[10px] text-slate-500 mt-1">
                     {week.avgScore.toFixed(1)}
                   </span>
                 )}
                 {week.completionRate > 0 && (
                   <div className="w-full mt-1">
-                    <div className="h-0.5 bg-[#2a2a2a] rounded-full overflow-hidden">
+                    <div className="h-0.5 bg-slate-200 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-indigo-500 rounded-full"
                         style={{ width: `${Math.min(week.completionRate, 100)}%` }}
@@ -331,7 +331,7 @@ export default function ProgressPage() {
           {["VOLUME", "TONALITY", "PAUSE", "STORYTELLING"].map((phase) => (
             <div
               key={phase}
-              className="text-center text-[10px] text-zinc-500"
+              className="text-center text-[10px] text-slate-400"
             >
               <Badge variant={phaseVariant[phase]} className="text-[9px]">
                 {phase}
@@ -348,53 +348,53 @@ export default function ProgressPage() {
           return (
             <Card
               key={phase.id}
-              className={`p-6 bg-[#111111] border-[#2a2a2a] ${
+              className={`p-6 bg-white border-slate-200 ${
                 isCurrent ? phaseBorderColors[phase.phase] : ""
               }`}
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div
-                    className={`flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br ${phaseColors[phase.phase]} text-white`}
+                    className={`flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br ${phaseColors[phase.phase]} text-slate-900`}
                   >
                     {phaseIcons[phase.phase]}
                   </div>
                   <div>
                     <h4 className="font-semibold text-sm">{phase.name}</h4>
-                    <p className="text-xs text-zinc-500">
+                    <p className="text-xs text-slate-400">
                       Weeks {phase.weeks.join(", ")}
                     </p>
                   </div>
                 </div>
                 {isCurrent && <Badge variant="default">Current</Badge>}
               </div>
-              <p className="text-xs text-zinc-400 mb-4">{phase.description}</p>
+              <p className="text-xs text-slate-500 mb-4">{phase.description}</p>
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-zinc-500">Completion</span>
-                  <span className="text-zinc-300">
+                  <span className="text-slate-400">Completion</span>
+                  <span className="text-slate-600">
                     {phase.completionPercent.toFixed(0)}%
                   </span>
                 </div>
                 <Progress value={phase.completionPercent} className="h-1.5" />
                 <div className="grid grid-cols-3 gap-4 pt-2">
                   <div>
-                    <span className="text-lg font-bold text-white">
+                    <span className="text-lg font-bold text-slate-900">
                       {phase.avgScore > 0 ? phase.avgScore.toFixed(1) : "-"}
                     </span>
-                    <p className="text-[10px] text-zinc-500">Avg Score</p>
+                    <p className="text-[10px] text-slate-400">Avg Score</p>
                   </div>
                   <div>
-                    <span className="text-lg font-bold text-white">
+                    <span className="text-lg font-bold text-slate-900">
                       {phase.sessionsCount}
                     </span>
-                    <p className="text-[10px] text-zinc-500">Sessions</p>
+                    <p className="text-[10px] text-slate-400">Sessions</p>
                   </div>
                   <div>
-                    <span className="text-lg font-bold text-white">
+                    <span className="text-lg font-bold text-slate-900">
                       {phase.keyMetricValue}
                     </span>
-                    <p className="text-[10px] text-zinc-500">{phase.keyMetric}</p>
+                    <p className="text-[10px] text-slate-400">{phase.keyMetric}</p>
                   </div>
                 </div>
               </div>
@@ -404,13 +404,13 @@ export default function ProgressPage() {
       </div>
 
       {/* Before & After Scorecard */}
-      <Card className="p-6 bg-[#111111] border-[#2a2a2a]">
+      <Card className="p-6 bg-white border-slate-200">
         <div className="flex items-center gap-2 mb-4">
-          <Trophy className="w-5 h-5 text-amber-400" />
+          <Trophy className="w-5 h-5 text-amber-600" />
           <h3 className="font-semibold text-sm">Before & After</h3>
         </div>
         {comparison.every((c) => c.baseline === 0 && c.current === 0) ? (
-          <p className="text-sm text-zinc-500 text-center py-4">
+          <p className="text-sm text-slate-400 text-center py-4">
             Complete more sessions to see your before & after comparison.
           </p>
         ) : (
@@ -420,43 +420,43 @@ export default function ProgressPage() {
                 c.metric === "Filler Count" ? c.delta < 0 : c.delta > 0;
               const isNeutral = c.delta === 0;
               return (
-                <div key={c.metric} className="text-center p-3 rounded-lg bg-[#0a0a0a]">
-                  <p className="text-[10px] text-zinc-500 mb-2">{c.metric}</p>
+                <div key={c.metric} className="text-center p-3 rounded-lg bg-white">
+                  <p className="text-[10px] text-slate-400 mb-2">{c.metric}</p>
                   <div className="flex items-center justify-center gap-3">
                     <div>
-                      <span className="text-sm text-zinc-500">
+                      <span className="text-sm text-slate-400">
                         {c.baseline > 0 ? c.baseline.toFixed(1) : "-"}
                       </span>
-                      <p className="text-[9px] text-zinc-600">Baseline</p>
+                      <p className="text-[9px] text-slate-400">Baseline</p>
                     </div>
                     <div>
                       {isNeutral ? (
-                        <Minus className="w-4 h-4 text-zinc-500" />
+                        <Minus className="w-4 h-4 text-slate-400" />
                       ) : isImprovement ? (
-                        <TrendingUp className="w-4 h-4 text-emerald-400" />
+                        <TrendingUp className="w-4 h-4 text-emerald-600" />
                       ) : (
-                        <TrendingDown className="w-4 h-4 text-red-400" />
+                        <TrendingDown className="w-4 h-4 text-red-600" />
                       )}
                     </div>
                     <div>
                       <span
                         className={`text-sm font-bold ${
                           isImprovement
-                            ? "text-emerald-400"
+                            ? "text-emerald-600"
                             : isNeutral
-                              ? "text-zinc-400"
-                              : "text-red-400"
+                              ? "text-slate-500"
+                              : "text-red-600"
                         }`}
                       >
                         {c.current > 0 ? c.current.toFixed(1) : "-"}
                       </span>
-                      <p className="text-[9px] text-zinc-600">Now</p>
+                      <p className="text-[9px] text-slate-400">Now</p>
                     </div>
                   </div>
                   {!isNeutral && c.delta !== 0 && (
                     <span
                       className={`text-[10px] mt-1 block ${
-                        isImprovement ? "text-emerald-400" : "text-red-400"
+                        isImprovement ? "text-emerald-600" : "text-red-600"
                       }`}
                     >
                       {c.delta > 0 ? "+" : ""}
@@ -471,7 +471,7 @@ export default function ProgressPage() {
       </Card>
 
       {/* Graduation Recordings */}
-      <Card className="p-6 bg-[#111111] border-[#2a2a2a]">
+      <Card className="p-6 bg-white border-slate-200">
         <h3 className="font-semibold text-sm mb-4">Graduation Recordings</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {[
@@ -485,7 +485,7 @@ export default function ProgressPage() {
             return (
               <Card
                 key={grad.phase}
-                className={`p-4 bg-[#0a0a0a] border-[#2a2a2a] text-center ${
+                className={`p-4 bg-white border-slate-200 text-center ${
                   isCompleted ? phaseBorderColors[grad.phase] : ""
                 }`}
               >
@@ -494,14 +494,14 @@ export default function ProgressPage() {
                 </Badge>
                 {isCompleted ? (
                   <>
-                    <div className="text-2xl font-bold text-white my-2">
+                    <div className="text-2xl font-bold text-slate-900 my-2">
                       {week.avgScore.toFixed(1)}
                     </div>
-                    <p className="text-xs text-zinc-500">Week {grad.week}</p>
+                    <p className="text-xs text-slate-400">Week {grad.week}</p>
                     <Button
                       variant="outline"
                       size="sm"
-                      className="mt-3 w-full border-[#2a2a2a] text-xs"
+                      className="mt-3 w-full border-slate-200 text-xs"
                       asChild
                     >
                       <Link href="/sessions">View Session</Link>
@@ -509,8 +509,8 @@ export default function ProgressPage() {
                   </>
                 ) : (
                   <>
-                    <Circle className="w-8 h-8 mx-auto text-zinc-700 my-2" />
-                    <p className="text-xs text-zinc-600">Not yet reached</p>
+                    <Circle className="w-8 h-8 mx-auto text-slate-300 my-2" />
+                    <p className="text-xs text-slate-400">Not yet reached</p>
                   </>
                 )}
               </Card>

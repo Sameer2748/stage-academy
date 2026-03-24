@@ -59,7 +59,7 @@ export default function CountdownTimer({
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 1.8, opacity: 0 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
-            className="text-[120px] font-bold text-white tabular-nums select-none"
+            className="text-[120px] font-bold text-slate-900 tabular-nums select-none"
           >
             {count}
           </motion.div>
@@ -71,7 +71,7 @@ export default function CountdownTimer({
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 2, opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="text-[80px] font-bold text-indigo-400 select-none"
+            className="text-[80px] font-bold text-indigo-600 select-none"
           >
             GO!
           </motion.div>

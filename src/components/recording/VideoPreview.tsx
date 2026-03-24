@@ -19,23 +19,23 @@ export default function VideoPreview({ src, isVideo }: VideoPreviewProps) {
 
   if (!isVideo) {
     return (
-      <div className="relative flex flex-col items-center justify-center w-full rounded-xl bg-[#111111] border border-[#2a2a2a] p-8 gap-4">
-        <div className="flex items-center justify-center w-16 h-16 rounded-full bg-indigo-500/10 border border-indigo-500/20">
-          <Volume2 className="w-8 h-8 text-indigo-400" />
+      <div className="relative flex flex-col items-center justify-center w-full rounded-xl bg-white border border-slate-200 p-8 gap-4">
+        <div className="flex items-center justify-center w-16 h-16 rounded-full bg-indigo-50 border border-indigo-200">
+          <Volume2 className="w-8 h-8 text-indigo-600" />
         </div>
         <p className="text-sm text-gray-400">Audio Recording</p>
         <audio
           ref={mediaRef as React.RefObject<HTMLAudioElement>}
           src={src}
           controls
-          className="w-full max-w-md [&::-webkit-media-controls-panel]:bg-[#1a1a1a] [&::-webkit-media-controls-current-time-display]:text-white [&::-webkit-media-controls-time-remaining-display]:text-white"
+          className="w-full max-w-md [&::-webkit-media-controls-panel]:bg-slate-100 [&::-webkit-media-controls-current-time-display]:text-slate-900 [&::-webkit-media-controls-time-remaining-display]:text-slate-900"
         />
       </div>
     );
   }
 
   return (
-    <div className="relative w-full rounded-xl overflow-hidden bg-black border border-[#2a2a2a]">
+    <div className="relative w-full rounded-xl overflow-hidden bg-black border border-slate-200">
       <video
         ref={mediaRef as React.RefObject<HTMLVideoElement>}
         src={src}

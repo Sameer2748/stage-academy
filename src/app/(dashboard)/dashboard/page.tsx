@@ -81,10 +81,10 @@ export default function DashboardPage() {
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">
+        <h1 className="text-2xl font-bold text-slate-900">
           Welcome back{session?.user?.name ? `, ${session.user.name.split(" ")[0]}` : ""}
         </h1>
-        <p className="text-sm text-zinc-500 mt-1">Week {currentWeek} — Here&apos;s your training overview</p>
+        <p className="text-sm text-slate-400 mt-1">Week {currentWeek} — Here&apos;s your training overview</p>
       </div>
 
       {/* Quick Stats */}
@@ -95,15 +95,15 @@ export default function DashboardPage() {
           { label: "Recordings", value: totalRecordings.toString(), sub: `${totalReviewed} reviewed`, icon: Mic, color: "red" },
           { label: "Current Week", value: `W${currentWeek}`, sub: "of 12 weeks", icon: Calendar, color: "purple" },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl bg-[#111] border border-[#2a2a2a] p-4">
+          <div key={stat.label} className="rounded-xl bg-white border border-slate-200 p-4 shadow-sm">
             <div className="flex items-center justify-between mb-3">
-              <div className={`w-8 h-8 rounded-lg bg-${stat.color}-500/10 border border-${stat.color}-500/20 flex items-center justify-center`}>
-                <stat.icon className={`w-4 h-4 text-${stat.color}-400`} />
+              <div className={`w-8 h-8 rounded-lg bg-${stat.color}-50 border border-${stat.color}-200 flex items-center justify-center`}>
+                <stat.icon className={`w-4 h-4 text-${stat.color}-600`} />
               </div>
             </div>
-            <p className="text-2xl font-bold text-white">{stat.value}</p>
-            <p className="text-xs text-zinc-500 mt-0.5">{stat.label}</p>
-            <p className="text-[10px] text-zinc-600 mt-1">{stat.sub}</p>
+            <p className="text-2xl font-bold text-slate-900">{stat.value}</p>
+            <p className="text-xs text-slate-400 mt-0.5">{stat.label}</p>
+            <p className="text-[10px] text-slate-400 mt-1">{stat.sub}</p>
           </div>
         ))}
       </div>
@@ -112,39 +112,39 @@ export default function DashboardPage() {
         {/* Left Column */}
         <div className="lg:col-span-2 space-y-6">
           {/* Today's Plan */}
-          <div className="rounded-xl bg-[#111] border border-[#2a2a2a] p-5">
+          <div className="rounded-xl bg-white border border-slate-200 p-5 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                <Target className="w-4 h-4 text-indigo-400" /> Today&apos;s Plan — {DAY_NAMES[dayNum - 1]}
+              <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                <Target className="w-4 h-4 text-indigo-600" /> Today&apos;s Plan — {DAY_NAMES[dayNum - 1]}
               </h3>
               <Link
                 href={`/weekly-plan/day/${dayNum}?week=${currentWeek}`}
-                className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1"
+                className="text-xs text-indigo-600 hover:text-indigo-500 flex items-center gap-1"
               >
                 Open Day <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
             {todayTasks.length === 0 ? (
               <div className="text-center py-8">
-                <Calendar className="w-8 h-8 text-zinc-700 mx-auto mb-2" />
-                <p className="text-sm text-zinc-500">No tasks planned for today</p>
-                <Link href="/weekly-plan" className="text-xs text-indigo-400 hover:text-indigo-300 mt-2 inline-block">
+                <Calendar className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                <p className="text-sm text-slate-400">No tasks planned for today</p>
+                <Link href="/weekly-plan" className="text-xs text-indigo-600 hover:text-indigo-500 mt-2 inline-block">
                   Set up your weekly plan →
                 </Link>
               </div>
             ) : (
               <div className="space-y-2">
                 {todayTasks.slice(0, 5).map((task: any) => (
-                  <div key={task.id} className="flex items-center gap-3 p-2.5 rounded-lg border border-[#2a2a2a]">
+                  <div key={task.id} className="flex items-center gap-3 p-2.5 rounded-lg border border-slate-200">
                     {task.completed ? (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                     ) : (
-                      <div className="w-4 h-4 rounded-full border border-zinc-600 shrink-0" />
+                      <div className="w-4 h-4 rounded-full border border-slate-300 shrink-0" />
                     )}
-                    <span className={`text-sm flex-1 ${task.completed ? "text-zinc-500 line-through" : "text-white"}`}>
+                    <span className={`text-sm flex-1 ${task.completed ? "text-slate-400 line-through" : "text-slate-700"}`}>
                       {task.title}
                     </span>
-                    <span className="text-[9px] px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 uppercase">{task.type}</span>
+                    <span className="text-[9px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 uppercase">{task.type}</span>
                   </div>
                 ))}
               </div>
@@ -152,12 +152,12 @@ export default function DashboardPage() {
           </div>
 
           {/* Week Overview */}
-          <div className="rounded-xl bg-[#111] border border-[#2a2a2a] p-5">
+          <div className="rounded-xl bg-white border border-slate-200 p-5 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-purple-400" /> Week {currentWeek} Overview
+              <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-purple-600" /> Week {currentWeek} Overview
               </h3>
-              <Link href="/weekly-plan" className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
+              <Link href="/weekly-plan" className="text-xs text-indigo-600 hover:text-indigo-500 flex items-center gap-1">
                 View Plan <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
@@ -171,13 +171,13 @@ export default function DashboardPage() {
                   <Link
                     key={name}
                     href={`/weekly-plan/day/${i + 1}?week=${currentWeek}`}
-                    className={`text-center p-3 rounded-lg border transition-all hover:border-zinc-600 ${
-                      isToday ? "border-indigo-500/30 bg-indigo-500/5" : "border-[#2a2a2a]"
+                    className={`text-center p-3 rounded-lg border transition-all hover:border-slate-300 ${
+                      isToday ? "border-indigo-300 bg-indigo-50" : "border-slate-200"
                     }`}
                   >
-                    <p className={`text-[10px] font-medium mb-1 ${isToday ? "text-indigo-400" : "text-zinc-500"}`}>{name}</p>
-                    <p className="text-lg font-bold text-white">{tasks.length > 0 ? `${done}/${tasks.length}` : "—"}</p>
-                    <p className="text-[9px] text-zinc-600 mt-0.5">{tasks.length > 0 ? "tasks" : "empty"}</p>
+                    <p className={`text-[10px] font-medium mb-1 ${isToday ? "text-indigo-600" : "text-slate-400"}`}>{name}</p>
+                    <p className="text-lg font-bold text-slate-900">{tasks.length > 0 ? `${done}/${tasks.length}` : "—"}</p>
+                    <p className="text-[9px] text-slate-400 mt-0.5">{tasks.length > 0 ? "tasks" : "empty"}</p>
                   </Link>
                 );
               })}
@@ -188,8 +188,8 @@ export default function DashboardPage() {
         {/* Right Column */}
         <div className="space-y-6">
           {/* Quick Actions */}
-          <div className="rounded-xl bg-[#111] border border-[#2a2a2a] p-5">
-            <h3 className="text-sm font-semibold text-white mb-3">Quick Actions</h3>
+          <div className="rounded-xl bg-white border border-slate-200 p-5 shadow-sm">
+            <h3 className="text-sm font-semibold text-slate-900 mb-3">Quick Actions</h3>
             <div className="space-y-2">
               {[
                 { href: "/weekly-plan", label: "Weekly Plan", desc: "Plan your practice", icon: Calendar, color: "purple" },
@@ -200,40 +200,40 @@ export default function DashboardPage() {
                 <Link
                   key={action.href}
                   href={action.href}
-                  className="flex items-center gap-3 p-3 rounded-lg border border-[#2a2a2a] hover:border-zinc-600 hover:bg-[#1a1a1a] transition-all"
+                  className="flex items-center gap-3 p-3 rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all"
                 >
-                  <div className={`w-8 h-8 rounded-lg bg-${action.color}-500/10 border border-${action.color}-500/20 flex items-center justify-center`}>
-                    <action.icon className={`w-4 h-4 text-${action.color}-400`} />
+                  <div className={`w-8 h-8 rounded-lg bg-${action.color}-50 border border-${action.color}-200 flex items-center justify-center`}>
+                    <action.icon className={`w-4 h-4 text-${action.color}-600`} />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-white">{action.label}</p>
-                    <p className="text-[10px] text-zinc-500">{action.desc}</p>
+                    <p className="text-sm font-medium text-slate-900">{action.label}</p>
+                    <p className="text-[10px] text-slate-400">{action.desc}</p>
                   </div>
-                  <ArrowRight className="w-3.5 h-3.5 text-zinc-600 ml-auto" />
+                  <ArrowRight className="w-3.5 h-3.5 text-slate-400 ml-auto" />
                 </Link>
               ))}
             </div>
           </div>
 
           {/* Video Progress */}
-          <div className="rounded-xl bg-[#111] border border-[#2a2a2a] p-5">
-            <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-              <Play className="w-4 h-4 text-indigo-400" /> Course Progress
+          <div className="rounded-xl bg-white border border-slate-200 p-5 shadow-sm">
+            <h3 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
+              <Play className="w-4 h-4 text-indigo-600" /> Course Progress
             </h3>
             <div className="space-y-3">
               <div>
                 <div className="flex justify-between text-xs mb-1">
-                  <span className="text-zinc-400">Videos watched</span>
-                  <span className="text-white">{videoProgress}%</span>
+                  <span className="text-slate-500">Videos watched</span>
+                  <span className="text-slate-900">{videoProgress}%</span>
                 </div>
-                <div className="h-2 rounded-full bg-[#1a1a1a] overflow-hidden">
+                <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
                   <div
                     className="h-full rounded-full bg-gradient-to-r from-indigo-600 to-purple-500 transition-all"
                     style={{ width: `${videoProgress}%` }}
                   />
                 </div>
               </div>
-              <div className="flex justify-between text-xs text-zinc-500">
+              <div className="flex justify-between text-xs text-slate-400">
                 <span>{totalWatched} watched</span>
                 <span>{totalVideos - totalWatched} remaining</span>
               </div>
@@ -241,11 +241,11 @@ export default function DashboardPage() {
           </div>
 
           {/* AI Tip */}
-          <div className="rounded-xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 p-5">
-            <h3 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-indigo-400" /> AI Tip
+          <div className="rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-200 p-5">
+            <h3 className="text-sm font-semibold text-slate-900 mb-2 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-indigo-600" /> AI Tip
             </h3>
-            <p className="text-xs text-indigo-200 leading-relaxed">
+            <p className="text-xs text-indigo-700 leading-relaxed">
               Consistency is key to improving your communication skills. Try to practice daily, even if it&apos;s just 5 minutes. Focus on one area at a time — volume, tonality, pause, or storytelling.
             </p>
           </div>

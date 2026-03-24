@@ -205,9 +205,9 @@ export default function AdminVideosPage() {
   const formContent = (
     <div className="space-y-4">
       <div>
-        <label className="text-xs text-zinc-400 mb-1 block">Module</label>
+        <label className="text-xs text-slate-500 mb-1 block">Module</label>
         <Select value={formModuleId} onValueChange={setFormModuleId}>
-          <SelectTrigger className="bg-[#0a0a0a] border-[#2a2a2a]">
+          <SelectTrigger className="bg-white border-slate-200">
             <SelectValue placeholder="Select module" />
           </SelectTrigger>
           <SelectContent>
@@ -220,15 +220,15 @@ export default function AdminVideosPage() {
         </Select>
       </div>
       <div>
-        <label className="text-xs text-zinc-400 mb-1 block">Title</label>
+        <label className="text-xs text-slate-500 mb-1 block">Title</label>
         <Input
           value={formTitle}
           onChange={(e) => setFormTitle(e.target.value)}
-          className="bg-[#0a0a0a] border-[#2a2a2a]"
+          className="bg-white border-slate-200"
         />
       </div>
       <div>
-        <label className="text-xs text-zinc-400 mb-1 block">
+        <label className="text-xs text-slate-500 mb-1 block">
           Google Drive File ID
         </label>
         <div className="flex gap-2">
@@ -236,12 +236,12 @@ export default function AdminVideosPage() {
             value={formDriveFileId}
             onChange={(e) => setFormDriveFileId(e.target.value)}
             placeholder="Paste from share link"
-            className="bg-[#0a0a0a] border-[#2a2a2a] flex-1"
+            className="bg-white border-slate-200 flex-1"
           />
           <Button
             variant="outline"
             size="sm"
-            className="border-[#2a2a2a]"
+            className="border-slate-200"
             onClick={() => formDriveFileId && testEmbed(formDriveFileId)}
             disabled={!formDriveFileId}
           >
@@ -250,44 +250,44 @@ export default function AdminVideosPage() {
         </div>
       </div>
       <div>
-        <label className="text-xs text-zinc-400 mb-1 block">Description</label>
+        <label className="text-xs text-slate-500 mb-1 block">Description</label>
         <Textarea
           value={formDescription}
           onChange={(e) => setFormDescription(e.target.value)}
-          className="bg-[#0a0a0a] border-[#2a2a2a]"
+          className="bg-white border-slate-200"
           rows={2}
         />
       </div>
       <div className="grid grid-cols-3 gap-3">
         <div>
-          <label className="text-xs text-zinc-400 mb-1 block">Sort Order</label>
+          <label className="text-xs text-slate-500 mb-1 block">Sort Order</label>
           <Input
             type="number"
             value={formSortOrder}
             onChange={(e) => setFormSortOrder(Number(e.target.value))}
-            className="bg-[#0a0a0a] border-[#2a2a2a]"
+            className="bg-white border-slate-200"
           />
         </div>
         <div>
-          <label className="text-xs text-zinc-400 mb-1 block">
+          <label className="text-xs text-slate-500 mb-1 block">
             Duration (m:ss)
           </label>
           <Input
             value={formDuration}
             onChange={(e) => setFormDuration(e.target.value)}
             placeholder="3:45"
-            className="bg-[#0a0a0a] border-[#2a2a2a]"
+            className="bg-white border-slate-200"
           />
         </div>
         <div>
-          <label className="text-xs text-zinc-400 mb-1 block">
+          <label className="text-xs text-slate-500 mb-1 block">
             Week Reference
           </label>
           <Input
             value={formWeekRef}
             onChange={(e) => setFormWeekRef(e.target.value)}
             placeholder="Week 1-3"
-            className="bg-[#0a0a0a] border-[#2a2a2a]"
+            className="bg-white border-slate-200"
           />
         </div>
       </div>
@@ -299,14 +299,14 @@ export default function AdminVideosPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Video Management</h2>
-          <p className="text-sm text-zinc-500 mt-1">
+          <p className="text-sm text-slate-400 mt-1">
             {totalVideos} videos across {modules.length} modules
           </p>
         </div>
         <div className="flex gap-2">
           <Button
             variant="outline"
-            className="border-[#2a2a2a] gap-2"
+            className="border-slate-200 gap-2"
             onClick={() => setBulkImportOpen(true)}
           >
             <Upload className="w-4 h-4" /> Bulk Import
@@ -323,42 +323,42 @@ export default function AdminVideosPage() {
       {/* Modules & Videos */}
       <div className="space-y-4">
         {modules.map((mod) => (
-          <Card key={mod.id} className="bg-[#111111] border-[#2a2a2a] overflow-hidden">
-            <div className="p-4 border-b border-[#2a2a2a] flex items-center gap-3">
+          <Card key={mod.id} className="bg-white border-slate-200 overflow-hidden">
+            <div className="p-4 border-b border-slate-200 flex items-center gap-3">
               <Badge variant="secondary">{mod.phase}</Badge>
               <span className="font-semibold text-sm">{mod.title}</span>
-              <span className="text-xs text-zinc-500">
+              <span className="text-xs text-slate-400">
                 {mod.videos.length} videos
               </span>
             </div>
             {mod.videos.length === 0 ? (
-              <div className="p-4 text-center text-sm text-zinc-600">
+              <div className="p-4 text-center text-sm text-slate-400">
                 No videos in this module
               </div>
             ) : (
-              <div className="divide-y divide-[#1a1a1a]">
+              <div className="divide-y divide-slate-200">
                 {mod.videos.map((video) => (
                   <div
                     key={video.id}
-                    className="flex items-center gap-3 p-3 hover:bg-[#1a1a1a] transition-colors"
+                    className="flex items-center gap-3 p-3 hover:bg-slate-100 transition-colors"
                   >
-                    <GripVertical className="w-4 h-4 text-zinc-700 shrink-0" />
-                    <Video className="w-4 h-4 text-zinc-500 shrink-0" />
+                    <GripVertical className="w-4 h-4 text-slate-300 shrink-0" />
+                    <Video className="w-4 h-4 text-slate-400 shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-zinc-200 truncate">
+                      <p className="text-sm text-slate-700 truncate">
                         {video.title}
                       </p>
-                      <p className="text-[10px] text-zinc-600 font-mono">
+                      <p className="text-[10px] text-slate-400 font-mono">
                         {video.driveFileId}
                       </p>
                     </div>
                     {video.duration && (
-                      <span className="text-xs text-zinc-500">
+                      <span className="text-xs text-slate-400">
                         {Math.floor(video.duration / 60)}:
                         {(video.duration % 60).toString().padStart(2, "0")}
                       </span>
                     )}
-                    <span className="text-xs text-zinc-600">
+                    <span className="text-xs text-slate-400">
                       #{video.sortOrder}
                     </span>
                     <div className="flex gap-1 shrink-0">
@@ -381,7 +381,7 @@ export default function AdminVideosPage() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7 text-red-400"
+                        className="h-7 w-7 text-red-600"
                         onClick={() => handleDelete(video.id)}
                       >
                         <Trash2 className="w-3 h-3" />
@@ -397,7 +397,7 @@ export default function AdminVideosPage() {
 
       {/* Add Video Dialog */}
       <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
-        <DialogContent className="bg-[#111111] border-[#2a2a2a] max-w-lg">
+        <DialogContent className="bg-white border-slate-200 max-w-lg">
           <DialogHeader>
             <DialogTitle>Add Video</DialogTitle>
           </DialogHeader>
@@ -406,7 +406,7 @@ export default function AdminVideosPage() {
             <Button
               variant="outline"
               onClick={() => setAddDialogOpen(false)}
-              className="border-[#2a2a2a]"
+              className="border-slate-200"
             >
               Cancel
             </Button>
@@ -423,7 +423,7 @@ export default function AdminVideosPage() {
 
       {/* Edit Video Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent className="bg-[#111111] border-[#2a2a2a] max-w-lg">
+        <DialogContent className="bg-white border-slate-200 max-w-lg">
           <DialogHeader>
             <DialogTitle>Edit Video</DialogTitle>
           </DialogHeader>
@@ -432,7 +432,7 @@ export default function AdminVideosPage() {
             <Button
               variant="outline"
               onClick={() => setEditDialogOpen(false)}
-              className="border-[#2a2a2a]"
+              className="border-slate-200"
             >
               Cancel
             </Button>
@@ -449,7 +449,7 @@ export default function AdminVideosPage() {
 
       {/* Bulk Import Dialog */}
       <Dialog open={bulkImportOpen} onOpenChange={setBulkImportOpen}>
-        <DialogContent className="bg-[#111111] border-[#2a2a2a]">
+        <DialogContent className="bg-white border-slate-200">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <FolderOpen className="w-5 h-5" /> Bulk Import from Drive
@@ -457,11 +457,11 @@ export default function AdminVideosPage() {
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <label className="text-xs text-zinc-400 mb-1 block">
+              <label className="text-xs text-slate-500 mb-1 block">
                 Target Module
               </label>
               <Select value={bulkModuleId} onValueChange={setBulkModuleId}>
-                <SelectTrigger className="bg-[#0a0a0a] border-[#2a2a2a]">
+                <SelectTrigger className="bg-white border-slate-200">
                   <SelectValue placeholder="Select module" />
                 </SelectTrigger>
                 <SelectContent>
@@ -474,14 +474,14 @@ export default function AdminVideosPage() {
               </Select>
             </div>
             <div>
-              <label className="text-xs text-zinc-400 mb-1 block">
+              <label className="text-xs text-slate-500 mb-1 block">
                 Google Drive Folder URL
               </label>
               <Input
                 value={bulkFolderUrl}
                 onChange={(e) => setBulkFolderUrl(e.target.value)}
                 placeholder="https://drive.google.com/drive/folders/..."
-                className="bg-[#0a0a0a] border-[#2a2a2a]"
+                className="bg-white border-slate-200"
               />
             </div>
           </div>
@@ -489,7 +489,7 @@ export default function AdminVideosPage() {
             <Button
               variant="outline"
               onClick={() => setBulkImportOpen(false)}
-              className="border-[#2a2a2a]"
+              className="border-slate-200"
             >
               Cancel
             </Button>
@@ -506,7 +506,7 @@ export default function AdminVideosPage() {
 
       {/* Preview Dialog */}
       <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
-        <DialogContent className="bg-[#111111] border-[#2a2a2a] max-w-3xl">
+        <DialogContent className="bg-white border-slate-200 max-w-3xl">
           <DialogHeader>
             <DialogTitle>Video Preview</DialogTitle>
           </DialogHeader>
@@ -525,7 +525,7 @@ export default function AdminVideosPage() {
             <Button
               variant="outline"
               onClick={() => setPreviewOpen(false)}
-              className="border-[#2a2a2a]"
+              className="border-slate-200"
             >
               Close
             </Button>

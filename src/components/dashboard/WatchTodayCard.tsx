@@ -40,9 +40,9 @@ export default function WatchTodayCard({ video, isWatched }: WatchTodayCardProps
   }
 
   return (
-    <Card className="p-5 bg-[#111111] border-[#2a2a2a]">
+    <Card className="p-5 bg-white border-slate-200">
       <div className="flex items-center gap-2 mb-3">
-        <BookOpen className="w-4 h-4 text-indigo-400" />
+        <BookOpen className="w-4 h-4 text-indigo-600" />
         <h3 className="text-sm font-semibold">Watch Today</h3>
         {isWatched && (
           <Badge variant="success" className="ml-auto gap-1 text-[10px]">
@@ -52,11 +52,11 @@ export default function WatchTodayCard({ video, isWatched }: WatchTodayCardProps
       </div>
 
       <div className="flex items-center gap-4">
-        <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center shrink-0">
-          <Play className="w-6 h-6 text-indigo-400" />
+        <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center shrink-0">
+          <Play className="w-6 h-6 text-indigo-600" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-zinc-200 truncate">
+          <p className="text-sm font-medium text-slate-700 truncate">
             {video.title}
           </p>
           <div className="flex items-center gap-2 mt-1">
@@ -67,7 +67,7 @@ export default function WatchTodayCard({ video, isWatched }: WatchTodayCardProps
               {video.moduleName}
             </Badge>
             {video.duration && (
-              <span className="text-[11px] text-zinc-500 flex items-center gap-1">
+              <span className="text-[11px] text-slate-400 flex items-center gap-1">
                 <Clock className="w-3 h-3" />
                 {formatDuration(video.duration)}
               </span>

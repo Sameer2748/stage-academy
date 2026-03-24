@@ -3,19 +3,76 @@
 @tailwind utilities;
 
 :root {
-  --background: #0a0a0a;
-  --surface: #111111;
-  --surface-elevated: #1a1a1a;
-  --border: #2a2a2a;
+  --background: #ffffff;
+  --surface: #f8fafc;
+  --surface-elevated: #f1f5f9;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
   --accent-primary: #6366f1;
   --accent-secondary: #8b5cf6;
+  --score-excellent: #16a34a;
+  --score-good: #d97706;
+  --score-poor: #dc2626;
+  --filler-highlight: #ea580c;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+}
+
+.dark {
+  --background: #0a0a0f;
+  --surface: #111118;
+  --surface-elevated: #1a1a24;
+  --border: #2a2a3a;
+  --border-strong: #3a3a4a;
+  --accent-primary: #818cf8;
+  --accent-secondary: #a78bfa;
   --score-excellent: #22c55e;
-  --score-good: #f59e0b;
+  --score-good: #fbbf24;
   --score-poor: #ef4444;
   --filler-highlight: #f97316;
-  --text-primary: #ffffff;
-  --text-secondary: #a1a1aa;
-  --text-muted: #71717a;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+}
+
+/* Dark mode overrides for Tailwind classes */
+.dark body,
+.dark .bg-white { background-color: var(--background) !important; }
+.dark .bg-slate-50 { background-color: var(--surface) !important; }
+.dark .bg-slate-100 { background-color: var(--surface-elevated) !important; }
+.dark .border-slate-200 { border-color: var(--border) !important; }
+.dark .border-slate-100 { border-color: var(--border) !important; }
+.dark .border-slate-300 { border-color: var(--border-strong) !important; }
+.dark .text-slate-900 { color: var(--text-primary) !important; }
+.dark .text-slate-800 { color: var(--text-primary) !important; }
+.dark .text-slate-700 { color: var(--text-secondary) !important; }
+.dark .text-slate-600 { color: var(--text-secondary) !important; }
+.dark .text-slate-500 { color: var(--text-muted) !important; }
+.dark .text-slate-400 { color: var(--text-muted) !important; }
+.dark .bg-white\/80 { background-color: rgba(10, 10, 15, 0.8) !important; }
+.dark .bg-white\/95 { background-color: rgba(10, 10, 15, 0.95) !important; }
+.dark .bg-white\/90 { background-color: rgba(10, 10, 15, 0.9) !important; }
+.dark .hover\:bg-slate-50:hover { background-color: var(--surface) !important; }
+.dark .hover\:bg-slate-100:hover { background-color: var(--surface-elevated) !important; }
+.dark .ring-white { --tw-ring-color: var(--background) !important; }
+.dark .bg-indigo-50 { background-color: rgba(99, 102, 241, 0.1) !important; }
+.dark .bg-purple-50 { background-color: rgba(139, 92, 246, 0.1) !important; }
+.dark .bg-blue-50 { background-color: rgba(59, 130, 246, 0.1) !important; }
+.dark .bg-emerald-50 { background-color: rgba(16, 185, 129, 0.1) !important; }
+.dark .bg-red-50 { background-color: rgba(239, 68, 68, 0.1) !important; }
+.dark .bg-amber-50 { background-color: rgba(245, 158, 11, 0.1) !important; }
+.dark .bg-zinc-50 { background-color: rgba(113, 113, 122, 0.1) !important; }
+.dark .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3) !important; }
+.dark .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4) !important; }
+.dark .shadow-xl { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5) !important; }
+.dark input, .dark textarea, .dark select {
+  background-color: var(--surface) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+.dark input::placeholder, .dark textarea::placeholder {
+  color: var(--text-muted) !important;
 }
 
 * {
@@ -40,20 +97,20 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background);
+  background: var(--surface);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: var(--border-strong);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3a3a;
+  background: #94a3b8;
 }
 
 /* Firefox scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--border) var(--background);
+  scrollbar-color: var(--border-strong) var(--surface);
 }

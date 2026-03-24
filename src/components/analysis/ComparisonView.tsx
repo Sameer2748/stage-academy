@@ -19,7 +19,7 @@ export default function ComparisonView({ current, previous }: ComparisonViewProp
   ];
 
   return (
-    <Card className="bg-[#111111] border-[#2a2a2a]">
+    <Card className="bg-white border-slate-200">
       <CardHeader>
         <CardTitle className="text-xl">Progress Radar</CardTitle>
       </CardHeader>
@@ -27,7 +27,7 @@ export default function ComparisonView({ current, previous }: ComparisonViewProp
         <div className="h-[300px] w-full mt-4">
           <ResponsiveContainer width="100%" height="100%">
             <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
-              <PolarGrid stroke="#2a2a2a" />
+              <PolarGrid stroke="#e2e8f0" />
               <PolarAngleAxis dataKey="subject" tick={{ fill: "#888888", fontSize: 13 }} />
               <PolarRadiusAxis angle={30} domain={[0, 10]} tick={false} axisLine={false} />
               <Radar
@@ -47,8 +47,8 @@ export default function ComparisonView({ current, previous }: ComparisonViewProp
                 />
               )}
               <Tooltip 
-                contentStyle={{ backgroundColor: "#111", borderColor: "#2a2a2a", color: "#fff" }}
-                itemStyle={{ color: "#fff" }}
+                contentStyle={{ backgroundColor: "#ffffff", borderColor: "#e2e8f0", color: "#0f172a" }}
+                itemStyle={{ color: "#0f172a" }}
               />
               <Legend wrapperStyle={{ paddingTop: "20px" }} />
             </RadarChart>

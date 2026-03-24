@@ -226,7 +226,7 @@ export default function SettingsPage() {
       </div>
 
       <Tabs defaultValue="reminders">
-        <TabsList className="bg-[#111111] border border-[#2a2a2a]">
+        <TabsList className="bg-white border border-slate-200">
           <TabsTrigger value="reminders" className="gap-2 text-xs">
             <Bell className="w-3 h-3" /> Reminders
           </TabsTrigger>
@@ -246,20 +246,20 @@ export default function SettingsPage() {
 
         {/* Reminders Tab */}
         <TabsContent value="reminders">
-          <Card className="p-6 bg-[#111111] border-[#2a2a2a] space-y-6">
+          <Card className="p-6 bg-white border-slate-200 space-y-6">
             <div>
-              <Label className="text-xs text-zinc-400">Daily Reminder Time</Label>
+              <Label className="text-xs text-slate-500">Daily Reminder Time</Label>
               <Input
                 type="time"
                 value={settings.reminderTime}
                 onChange={(e) =>
                   setSettings({ ...settings, reminderTime: e.target.value })
                 }
-                className="bg-[#0a0a0a] border-[#2a2a2a] w-40 mt-1"
+                className="bg-white border-slate-200 w-40 mt-1"
               />
             </div>
             <div>
-              <Label className="text-xs text-zinc-400 mb-2 block">
+              <Label className="text-xs text-slate-500 mb-2 block">
                 Reminder Days
               </Label>
               <div className="flex gap-2">
@@ -270,7 +270,7 @@ export default function SettingsPage() {
                     className={`w-10 h-10 rounded-lg text-xs font-medium transition-colors ${
                       settings.reminderDaysOfWeek.includes(day.value)
                         ? "bg-indigo-600 text-white"
-                        : "bg-[#0a0a0a] border border-[#2a2a2a] text-zinc-500"
+                        : "bg-white border border-slate-200 text-slate-400"
                     }`}
                   >
                     {day.label}
@@ -279,14 +279,14 @@ export default function SettingsPage() {
               </div>
             </div>
             <div>
-              <Label className="text-xs text-zinc-400">Timezone</Label>
+              <Label className="text-xs text-slate-500">Timezone</Label>
               <Select
                 value={settings.timezone}
                 onValueChange={(v) =>
                   setSettings({ ...settings, timezone: v })
                 }
               >
-                <SelectTrigger className="bg-[#0a0a0a] border-[#2a2a2a] w-64 mt-1">
+                <SelectTrigger className="bg-white border-slate-200 w-64 mt-1">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -301,7 +301,7 @@ export default function SettingsPage() {
             <Button
               variant="outline"
               size="sm"
-              className="border-[#2a2a2a]"
+              className="border-slate-200"
               onClick={sendTestNotification}
             >
               Send Test Notification
@@ -311,11 +311,11 @@ export default function SettingsPage() {
 
         {/* AI & Voice Tab */}
         <TabsContent value="ai">
-          <Card className="p-6 bg-[#111111] border-[#2a2a2a] space-y-6">
+          <Card className="p-6 bg-white border-slate-200 space-y-6">
             <div className="flex items-center justify-between">
               <div>
                 <Label className="text-sm">AI Voice Responses</Label>
-                <p className="text-xs text-zinc-500 mt-1">
+                <p className="text-xs text-slate-400 mt-1">
                   AI Coach will speak responses using ElevenLabs
                 </p>
               </div>
@@ -327,7 +327,7 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <Label className="text-xs text-zinc-400">
+              <Label className="text-xs text-slate-500">
                 ElevenLabs Voice ID
               </Label>
               <Input
@@ -339,7 +339,7 @@ export default function SettingsPage() {
                   })
                 }
                 placeholder="Leave empty for default"
-                className="bg-[#0a0a0a] border-[#2a2a2a] mt-1"
+                className="bg-white border-slate-200 mt-1"
               />
             </div>
           </Card>
@@ -347,11 +347,11 @@ export default function SettingsPage() {
 
         {/* Email Tab */}
         <TabsContent value="email">
-          <Card className="p-6 bg-[#111111] border-[#2a2a2a] space-y-6">
+          <Card className="p-6 bg-white border-slate-200 space-y-6">
             <div className="flex items-center justify-between">
               <div>
                 <Label className="text-sm">Weekly Summary Email</Label>
-                <p className="text-xs text-zinc-500 mt-1">
+                <p className="text-xs text-slate-400 mt-1">
                   Receive a weekly progress email every Sunday at 8 PM
                 </p>
               </div>
@@ -363,17 +363,17 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <Label className="text-xs text-zinc-400">Email Address</Label>
+              <Label className="text-xs text-slate-500">Email Address</Label>
               <Input
                 value={session?.user?.email || ""}
                 disabled
-                className="bg-[#0a0a0a] border-[#2a2a2a] mt-1 opacity-50"
+                className="bg-white border-slate-200 mt-1 opacity-50"
               />
             </div>
             <Button
               variant="outline"
               size="sm"
-              className="border-[#2a2a2a]"
+              className="border-slate-200"
               onClick={sendTestEmail}
             >
               Send Test Email
@@ -383,17 +383,17 @@ export default function SettingsPage() {
 
         {/* Course Tab */}
         <TabsContent value="course">
-          <Card className="p-6 bg-[#111111] border-[#2a2a2a] space-y-6">
+          <Card className="p-6 bg-white border-slate-200 space-y-6">
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label className="text-xs text-zinc-400">Current Phase</Label>
+                <Label className="text-xs text-slate-500">Current Phase</Label>
                 <Select
                   value={settings.currentPhase}
                   onValueChange={(v) =>
                     setSettings({ ...settings, currentPhase: v })
                   }
                 >
-                  <SelectTrigger className="bg-[#0a0a0a] border-[#2a2a2a] mt-1">
+                  <SelectTrigger className="bg-white border-slate-200 mt-1">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -405,7 +405,7 @@ export default function SettingsPage() {
                 </Select>
               </div>
               <div>
-                <Label className="text-xs text-zinc-400">Current Week</Label>
+                <Label className="text-xs text-slate-500">Current Week</Label>
                 <Input
                   type="number"
                   min={1}
@@ -417,11 +417,11 @@ export default function SettingsPage() {
                       currentWeek: Number(e.target.value),
                     })
                   }
-                  className="bg-[#0a0a0a] border-[#2a2a2a] mt-1"
+                  className="bg-white border-slate-200 mt-1"
                 />
               </div>
               <div>
-                <Label className="text-xs text-zinc-400">Current Day</Label>
+                <Label className="text-xs text-slate-500">Current Day</Label>
                 <Input
                   type="number"
                   min={1}
@@ -433,19 +433,19 @@ export default function SettingsPage() {
                       currentDay: Number(e.target.value),
                     })
                   }
-                  className="bg-[#0a0a0a] border-[#2a2a2a] mt-1"
+                  className="bg-white border-slate-200 mt-1"
                 />
               </div>
             </div>
             <div>
-              <Label className="text-xs text-zinc-400">Course Start Date</Label>
+              <Label className="text-xs text-slate-500">Course Start Date</Label>
               <Input
                 type="date"
                 value={settings.startDate}
                 onChange={(e) =>
                   setSettings({ ...settings, startDate: e.target.value })
                 }
-                className="bg-[#0a0a0a] border-[#2a2a2a] w-48 mt-1"
+                className="bg-white border-slate-200 w-48 mt-1"
               />
             </div>
             <Button
@@ -461,7 +461,7 @@ export default function SettingsPage() {
 
         {/* Account Tab */}
         <TabsContent value="account">
-          <Card className="p-6 bg-[#111111] border-[#2a2a2a] space-y-6">
+          <Card className="p-6 bg-white border-slate-200 space-y-6">
             <div className="flex items-center gap-4">
               <Avatar className="h-16 w-16">
                 <AvatarImage src={session?.user?.image || undefined} />
@@ -471,22 +471,22 @@ export default function SettingsPage() {
               </Avatar>
               <div>
                 <p className="font-semibold">{session?.user?.name || "User"}</p>
-                <p className="text-sm text-zinc-500">
+                <p className="text-sm text-slate-400">
                   {session?.user?.email || ""}
                 </p>
               </div>
             </div>
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 rounded-lg bg-[#0a0a0a]">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-white">
                 <div className="flex items-center gap-2">
-                  <Link2 className="w-4 h-4 text-zinc-500" />
+                  <Link2 className="w-4 h-4 text-slate-400" />
                   <span className="text-sm">Google Account</span>
                 </div>
                 <Badge variant="success">Connected</Badge>
               </div>
-              <div className="flex items-center justify-between p-3 rounded-lg bg-[#0a0a0a]">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-white">
                 <div className="flex items-center gap-2">
-                  <Link2 className="w-4 h-4 text-zinc-500" />
+                  <Link2 className="w-4 h-4 text-slate-400" />
                   <span className="text-sm">Google Calendar</span>
                 </div>
                 <Badge variant={settings.calendarConnected ? "success" : "secondary"}>
@@ -498,7 +498,7 @@ export default function SettingsPage() {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-[#2a2a2a] gap-2"
+                className="border-slate-200 gap-2"
                 onClick={handleExport}
               >
                 <Download className="w-4 h-4" /> Export All Data
@@ -510,25 +510,25 @@ export default function SettingsPage() {
 
       {/* Reset Progress Dialog */}
       <Dialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
-        <DialogContent className="bg-[#111111] border-[#2a2a2a]">
+        <DialogContent className="bg-white border-slate-200">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="w-5 h-5 text-red-400" /> Reset Progress
+              <AlertTriangle className="w-5 h-5 text-red-600" /> Reset Progress
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
-            <p className="text-sm text-zinc-400">
+            <p className="text-sm text-slate-500">
               This will reset your course progress to Week 1, Day 1. Your
               recordings and sessions will NOT be deleted.
             </p>
             <p className="text-sm">
-              Type <strong className="text-white">RESET</strong> to confirm.
+              Type <strong className="text-slate-900">RESET</strong> to confirm.
             </p>
             <Input
               value={resetConfirm}
               onChange={(e) => setResetConfirm(e.target.value)}
               placeholder="Type RESET"
-              className="bg-[#0a0a0a] border-[#2a2a2a]"
+              className="bg-white border-slate-200"
             />
           </div>
           <DialogFooter>
@@ -538,7 +538,7 @@ export default function SettingsPage() {
                 setResetDialogOpen(false);
                 setResetConfirm("");
               }}
-              className="border-[#2a2a2a]"
+              className="border-slate-200"
             >
               Cancel
             </Button>

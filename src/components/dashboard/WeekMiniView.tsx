@@ -14,10 +14,10 @@ export default function WeekMiniView({ days, sessions }: WeekMiniViewProps) {
   const sortedDays = [...days].sort((a, b) => a.dayNumber - b.dayNumber);
 
   return (
-    <Card className="col-span-4 rounded-xl border border-[#2a2a2a] bg-[#111111] overflow-hidden">
-      <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-[#2a2a2a]/50">
+    <Card className="col-span-4 rounded-xl border border-slate-200 bg-white overflow-hidden">
+      <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-slate-200/50">
         <CardTitle className="text-lg font-semibold flex items-center gap-2">
-          <CalendarDays className="h-5 w-5 text-indigo-400" /> This Week's Plan
+          <CalendarDays className="h-5 w-5 text-indigo-600" /> This Week's Plan
         </CardTitle>
       </CardHeader>
       <CardContent className="pt-6">
@@ -30,11 +30,11 @@ export default function WeekMiniView({ days, sessions }: WeekMiniViewProps) {
                 key={day.dayNumber}
                 className={`relative flex flex-col items-center justify-center p-3 rounded-lg border text-center transition-all ${
                   hasRecorded
-                    ? "border-green-500/30 bg-green-500/10 hover:border-green-500/50"
-                    : "border-[#2a2a2a] bg-black/20 hover:border-indigo-500/30"
+                    ? "border-green-200 bg-green-50 hover:border-green-500/50"
+                    : "border-slate-200 bg-black/20 hover:border-indigo-200"
                 }`}
               >
-                <span className="text-xs font-medium text-muted-foreground mb-1">
+                <span className="text-xs font-medium text-slate-500 mb-1">
                   Day {day.dayNumber}
                 </span>
                 {hasRecorded ? (

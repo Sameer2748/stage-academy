@@ -196,8 +196,8 @@ export default function RecordPage() {
     <div className="max-w-5xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">Recording Studio</h1>
-        <p className="text-sm text-zinc-500 mt-1">
+        <h1 className="text-2xl font-bold text-slate-900">Recording Studio</h1>
+        <p className="text-sm text-slate-400 mt-1">
           Record your practice session and track your progress
         </p>
       </div>
@@ -212,8 +212,8 @@ export default function RecordPage() {
               disabled={state !== "idle"}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 mode === "audio"
-                  ? "bg-indigo-500/20 text-indigo-400 border border-indigo-500/30"
-                  : "bg-[#111] text-zinc-400 border border-[#2a2a2a] hover:text-white"
+                  ? "bg-indigo-500/20 text-indigo-600 border border-indigo-200"
+                  : "bg-white text-slate-500 border border-slate-200 hover:text-slate-900"
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               <Mic className="w-4 h-4" />
@@ -224,8 +224,8 @@ export default function RecordPage() {
               disabled={state !== "idle"}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 mode === "video"
-                  ? "bg-indigo-500/20 text-indigo-400 border border-indigo-500/30"
-                  : "bg-[#111] text-zinc-400 border border-[#2a2a2a] hover:text-white"
+                  ? "bg-indigo-500/20 text-indigo-600 border border-indigo-200"
+                  : "bg-white text-slate-500 border border-slate-200 hover:text-slate-900"
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               <Video className="w-4 h-4" />
@@ -234,7 +234,7 @@ export default function RecordPage() {
           </div>
 
           {/* Preview Area */}
-          <div className="relative rounded-2xl overflow-hidden bg-[#111] border border-[#2a2a2a] aspect-video flex items-center justify-center">
+          <div className="relative rounded-2xl overflow-hidden bg-white border border-slate-200 aspect-video flex items-center justify-center">
             {/* Live Video Preview */}
             {mode === "video" && mediaStream && state !== "done" && (
               <video
@@ -263,8 +263,8 @@ export default function RecordPage() {
 
             {/* Idle State */}
             {state === "idle" && (
-              <div className="flex flex-col items-center gap-4 text-zinc-600">
-                <div className="w-20 h-20 rounded-full bg-[#1a1a1a] border border-[#2a2a2a] flex items-center justify-center">
+              <div className="flex flex-col items-center gap-4 text-slate-400">
+                <div className="w-20 h-20 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center">
                   {mode === "video" ? (
                     <Video className="w-8 h-8" />
                   ) : (
@@ -282,10 +282,10 @@ export default function RecordPage() {
                   <video src={recordedUrl} controls className="w-full h-full object-contain bg-black" />
                 ) : (
                   <div className="flex flex-col items-center justify-center h-full gap-6">
-                    <div className="w-24 h-24 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-                      <Mic className="w-10 h-10 text-emerald-400" />
+                    <div className="w-24 h-24 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center">
+                      <Mic className="w-10 h-10 text-emerald-600" />
                     </div>
-                    <p className="text-sm text-zinc-400">Recording complete - {formatTime(duration)}</p>
+                    <p className="text-sm text-slate-500">Recording complete - {formatTime(duration)}</p>
                     <audio src={recordedUrl} controls className="w-64" />
                   </div>
                 )}
@@ -299,14 +299,14 @@ export default function RecordPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/20 border border-red-500/30 backdrop-blur-sm"
+                  className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/20 border border-red-200 backdrop-blur-sm"
                 >
                   <motion.span
                     className="w-2.5 h-2.5 rounded-full bg-red-500"
                     animate={{ opacity: [1, 0.3, 1] }}
                     transition={{ repeat: Infinity, duration: 1.2 }}
                   />
-                  <span className="text-xs font-semibold text-red-400">REC</span>
+                  <span className="text-xs font-semibold text-red-600">REC</span>
                 </motion.div>
               )}
               {state === "paused" && (
@@ -317,22 +317,22 @@ export default function RecordPage() {
                   className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-500/20 border border-yellow-500/30 backdrop-blur-sm"
                 >
                   <span className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
-                  <span className="text-xs font-semibold text-yellow-400">PAUSED</span>
+                  <span className="text-xs font-semibold text-yellow-600">PAUSED</span>
                 </motion.div>
               )}
             </AnimatePresence>
 
             {/* Timer */}
             {(state === "recording" || state === "paused") && (
-              <div className="absolute top-4 right-4 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-sm border border-[#2a2a2a]">
-                <span className="text-sm font-mono text-white">{formatTime(duration)}</span>
+              <div className="absolute top-4 right-4 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-sm border border-slate-200">
+                <span className="text-sm font-mono text-slate-900">{formatTime(duration)}</span>
               </div>
             )}
           </div>
 
           {/* Waveform Bar (when video mode recording) */}
           {mode === "video" && (state === "recording" || state === "paused") && (
-            <div className="rounded-xl bg-[#111] border border-[#2a2a2a] px-4 py-3 flex items-end justify-center gap-[2px] h-16">
+            <div className="rounded-xl bg-white border border-slate-200 px-4 py-3 flex items-end justify-center gap-[2px] h-16">
               {audioData.slice(0, 48).map((val, i) => (
                 <motion.div
                   key={i}
@@ -345,12 +345,12 @@ export default function RecordPage() {
           )}
 
           {/* Controls */}
-          <div className="rounded-2xl bg-[#111] border border-[#2a2a2a] p-6">
+          <div className="rounded-2xl bg-white border border-slate-200 p-6">
             <div className="flex items-center justify-center gap-4">
               {state === "idle" && (
                 <button
                   onClick={startRecording}
-                  className="group flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold transition-all shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40"
+                  className="group flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-slate-900 font-semibold transition-all shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40"
                 >
                   <div className="w-5 h-5 rounded-full bg-red-500 group-hover:animate-pulse" />
                   Start Recording
@@ -361,14 +361,14 @@ export default function RecordPage() {
                 <>
                   <button
                     onClick={pauseRecording}
-                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 hover:bg-yellow-500/20 font-medium transition-all"
+                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-yellow-50 border border-yellow-500/20 text-yellow-600 hover:bg-yellow-500/20 font-medium transition-all"
                   >
                     <Pause className="w-5 h-5" />
                     Pause
                   </button>
                   <button
                     onClick={stopRecording}
-                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 font-medium transition-all"
+                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-red-50 border border-red-200 text-red-600 hover:bg-red-500/20 font-medium transition-all"
                   >
                     <Square className="w-5 h-5" />
                     Stop
@@ -380,14 +380,14 @@ export default function RecordPage() {
                 <>
                   <button
                     onClick={resumeRecording}
-                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 font-medium transition-all"
+                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 hover:bg-emerald-500/20 font-medium transition-all"
                   >
                     <Play className="w-5 h-5" />
                     Resume
                   </button>
                   <button
                     onClick={stopRecording}
-                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 font-medium transition-all"
+                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-red-50 border border-red-200 text-red-600 hover:bg-red-500/20 font-medium transition-all"
                   >
                     <Square className="w-5 h-5" />
                     Stop
@@ -399,7 +399,7 @@ export default function RecordPage() {
                 <>
                   <button
                     onClick={resetRecording}
-                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#1a1a1a] border border-[#2a2a2a] text-zinc-300 hover:text-white hover:bg-[#222] font-medium transition-all"
+                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium transition-all"
                   >
                     <RotateCcw className="w-5 h-5" />
                     Record Again
@@ -418,7 +418,7 @@ export default function RecordPage() {
             {/* Duration display when recording */}
             {(state === "recording" || state === "paused") && (
               <div className="flex items-center justify-center mt-4">
-                <div className="flex items-center gap-2 text-zinc-400">
+                <div className="flex items-center gap-2 text-slate-500">
                   <Clock className="w-4 h-4" />
                   <span className="font-mono text-lg">{formatTime(duration)}</span>
                 </div>
@@ -428,7 +428,7 @@ export default function RecordPage() {
 
           {/* Error */}
           {error && (
-            <div className="px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+            <div className="px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">
               {error}
             </div>
           )}
@@ -437,36 +437,36 @@ export default function RecordPage() {
         {/* Right Panel - Tips & Info */}
         <div className="space-y-4">
           {/* Session Info */}
-          <div className="rounded-2xl bg-[#111] border border-[#2a2a2a] p-5">
+          <div className="rounded-2xl bg-white border border-slate-200 p-5">
             <div className="flex items-center gap-2 mb-3">
-              <Target className="w-4 h-4 text-indigo-400" />
-              <h3 className="text-sm font-semibold text-white">Practice Goals</h3>
+              <Target className="w-4 h-4 text-indigo-600" />
+              <h3 className="text-sm font-semibold text-slate-900">Practice Goals</h3>
             </div>
             <div className="space-y-3">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-zinc-500">Duration</span>
-                <span className="text-white font-medium">3-5 min</span>
+                <span className="text-slate-400">Duration</span>
+                <span className="text-slate-900 font-medium">3-5 min</span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-zinc-500">Pace</span>
-                <span className="text-white font-medium">130-160 WPM</span>
+                <span className="text-slate-400">Pace</span>
+                <span className="text-slate-900 font-medium">130-160 WPM</span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-zinc-500">Filler Words</span>
-                <span className="text-white font-medium">&lt; 5</span>
+                <span className="text-slate-400">Filler Words</span>
+                <span className="text-slate-900 font-medium">&lt; 5</span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-zinc-500">Target Score</span>
-                <span className="text-white font-medium">70+</span>
+                <span className="text-slate-400">Target Score</span>
+                <span className="text-slate-900 font-medium">70+</span>
               </div>
             </div>
           </div>
 
           {/* Tips */}
-          <div className="rounded-2xl bg-[#111] border border-[#2a2a2a] p-5">
+          <div className="rounded-2xl bg-white border border-slate-200 p-5">
             <div className="flex items-center gap-2 mb-3">
-              <Lightbulb className="w-4 h-4 text-yellow-400" />
-              <h3 className="text-sm font-semibold text-white">Quick Tips</h3>
+              <Lightbulb className="w-4 h-4 text-yellow-600" />
+              <h3 className="text-sm font-semibold text-slate-900">Quick Tips</h3>
             </div>
             <ul className="space-y-2.5">
               {[
@@ -476,8 +476,8 @@ export default function RecordPage() {
                 "Record in a quiet environment",
                 "Stand up while recording for better energy",
               ].map((tip, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-zinc-400">
-                  <span className="text-indigo-400 mt-0.5 shrink-0">•</span>
+                <li key={i} className="flex items-start gap-2 text-sm text-slate-500">
+                  <span className="text-indigo-600 mt-0.5 shrink-0">•</span>
                   <span>{tip}</span>
                 </li>
               ))}
@@ -485,8 +485,8 @@ export default function RecordPage() {
           </div>
 
           {/* Keyboard Shortcuts */}
-          <div className="rounded-2xl bg-[#111] border border-[#2a2a2a] p-5">
-            <h3 className="text-sm font-semibold text-white mb-3">How it works</h3>
+          <div className="rounded-2xl bg-white border border-slate-200 p-5">
+            <h3 className="text-sm font-semibold text-slate-900 mb-3">How it works</h3>
             <ol className="space-y-2.5">
               {[
                 "Choose audio or video mode",
@@ -495,8 +495,8 @@ export default function RecordPage() {
                 "Stop when done and review your recording",
                 "Download to save your practice session",
               ].map((step, i) => (
-                <li key={i} className="flex items-start gap-2.5 text-sm text-zinc-400">
-                  <span className="w-5 h-5 rounded-full bg-[#1a1a1a] border border-[#2a2a2a] flex items-center justify-center text-[10px] text-zinc-500 font-medium shrink-0 mt-0.5">
+                <li key={i} className="flex items-start gap-2.5 text-sm text-slate-500">
+                  <span className="w-5 h-5 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-[10px] text-slate-400 font-medium shrink-0 mt-0.5">
                     {i + 1}
                   </span>
                   <span>{step}</span>

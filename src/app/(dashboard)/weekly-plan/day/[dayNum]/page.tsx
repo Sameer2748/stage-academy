@@ -447,15 +447,15 @@ export default function DayDetailPage() {
       <div className="flex items-center gap-4">
         <Link
           href={`/weekly-plan`}
-          className="p-2 rounded-lg bg-[#111] border border-[#2a2a2a] hover:bg-[#1a1a1a] transition-colors"
+          className="p-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 transition-colors"
         >
-          <ArrowLeft className="w-4 h-4 text-zinc-400" />
+          <ArrowLeft className="w-4 h-4 text-slate-500" />
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-white">
+          <h1 className="text-xl font-bold text-slate-900">
             {DAY_NAMES[dayNum - 1]} — Week {weekNum}
           </h1>
-          <p className="text-sm text-zinc-500">{dayPlan?.title || "No title set"}</p>
+          <p className="text-sm text-slate-400">{dayPlan?.title || "No title set"}</p>
         </div>
       </div>
 
@@ -463,12 +463,12 @@ export default function DayDetailPage() {
         {/* Left: Tasks + Recording */}
         <div className="lg:col-span-2 space-y-4">
           {/* Tasks Checklist */}
-          <div className="rounded-xl bg-[#111] border border-[#2a2a2a] p-5">
-            <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-              <Target className="w-4 h-4 text-indigo-400" /> Today&apos;s Tasks
+          <div className="rounded-xl bg-white border border-slate-200 p-5">
+            <h3 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
+              <Target className="w-4 h-4 text-indigo-600" /> Today&apos;s Tasks
             </h3>
             {dayPlan?.tasks.length === 0 && (
-              <p className="text-sm text-zinc-600">No tasks planned for this day.</p>
+              <p className="text-sm text-slate-400">No tasks planned for this day.</p>
             )}
             <div className="space-y-2">
               {dayPlan?.tasks.map((task) => (
@@ -477,32 +477,32 @@ export default function DayDetailPage() {
                   onClick={() => setActiveTaskId(activeTaskId === task.id ? null : task.id)}
                   className={`flex items-center gap-3 p-3 rounded-lg border transition-all cursor-pointer ${
                     activeTaskId === task.id
-                      ? "border-indigo-500/30 bg-indigo-500/5"
-                      : "border-[#2a2a2a] hover:border-zinc-600"
+                      ? "border-indigo-200 bg-indigo-50"
+                      : "border-slate-200 hover:border-slate-300"
                   } ${task.completed ? "opacity-50" : ""}`}
                 >
                   <button onClick={(e) => { e.stopPropagation(); toggleTask(task.id); }}>
                     {task.completed ? (
-                      <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                      <CheckCircle2 className="w-5 h-5 text-emerald-600" />
                     ) : (
-                      <Circle className="w-5 h-5 text-zinc-600" />
+                      <Circle className="w-5 h-5 text-slate-400" />
                     )}
                   </button>
                   <div className="flex-1">
-                    <span className={`text-sm font-medium text-white ${task.completed ? "line-through" : ""}`}>
+                    <span className={`text-sm font-medium text-slate-900 ${task.completed ? "line-through" : ""}`}>
                       {task.title}
                     </span>
                     {task.description && (
-                      <p className="text-xs text-zinc-500 mt-0.5">{task.description}</p>
+                      <p className="text-xs text-slate-400 mt-0.5">{task.description}</p>
                     )}
                   </div>
                   <div className="flex items-center gap-2">
                     {task.focusArea !== "general" && (
-                      <span className="text-[9px] px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 uppercase">
+                      <span className="text-[9px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 uppercase">
                         {task.focusArea}
                       </span>
                     )}
-                    <span className="text-[9px] px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 uppercase">
+                    <span className="text-[9px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 uppercase">
                       {task.type}
                     </span>
                   </div>
@@ -513,18 +513,18 @@ export default function DayDetailPage() {
 
           {/* Task Action Panel for non-record types */}
           {activeTask && activeTask.type !== "record" && activeTask.type !== "review" && !activeTask.completed && (
-            <div className="rounded-xl bg-[#111] border border-[#2a2a2a] p-5 space-y-3">
-              <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                {activeTask.type === "watch" && <Eye className="w-4 h-4 text-blue-400" />}
-                {activeTask.type === "exercise" && <Target className="w-4 h-4 text-amber-400" />}
-                {activeTask.type === "note" && <FileText className="w-4 h-4 text-emerald-400" />}
+            <div className="rounded-xl bg-white border border-slate-200 p-5 space-y-3">
+              <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                {activeTask.type === "watch" && <Eye className="w-4 h-4 text-blue-600" />}
+                {activeTask.type === "exercise" && <Target className="w-4 h-4 text-amber-600" />}
+                {activeTask.type === "note" && <FileText className="w-4 h-4 text-emerald-600" />}
                 {activeTask.title}
               </h3>
               {activeTask.description && (
-                <p className="text-sm text-zinc-400">{activeTask.description}</p>
+                <p className="text-sm text-slate-500">{activeTask.description}</p>
               )}
               {activeTask.focusArea !== "general" && (
-                <p className="text-xs text-indigo-400 uppercase">Focus: {activeTask.focusArea}</p>
+                <p className="text-xs text-indigo-600 uppercase">Focus: {activeTask.focusArea}</p>
               )}
               <div className="flex items-center gap-3 pt-2">
                 <Button
@@ -535,7 +535,7 @@ export default function DayDetailPage() {
                 </Button>
                 {activeTask.type === "watch" && (
                   <Link href="/library">
-                    <Button variant="outline" className="border-[#2a2a2a] gap-2">
+                    <Button variant="outline" className="border-slate-200 gap-2">
                       <BookOpen className="w-4 h-4" /> Go to Library
                     </Button>
                   </Link>
@@ -546,17 +546,17 @@ export default function DayDetailPage() {
 
           {/* Recording Studio */}
           {activeTask && (activeTask.type === "record" || activeTask.type === "review") && !activeTask.completed && (
-            <div className="rounded-xl bg-[#111] border border-[#2a2a2a] p-5 space-y-4">
+            <div className="rounded-xl bg-white border border-slate-200 p-5 space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                  <Mic className="w-4 h-4 text-red-400" /> Record: {activeTask.title}
+                <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                  <Mic className="w-4 h-4 text-red-600" /> Record: {activeTask.title}
                 </h3>
                 <div className="flex gap-2">
                   <button
                     onClick={() => recState === "idle" && setRecMode("audio")}
                     disabled={recState !== "idle"}
                     className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                      recMode === "audio" ? "bg-indigo-500/20 text-indigo-400 border border-indigo-500/30" : "bg-[#1a1a1a] text-zinc-400 border border-[#2a2a2a]"
+                      recMode === "audio" ? "bg-indigo-500/20 text-indigo-600 border border-indigo-200" : "bg-slate-100 text-slate-500 border border-slate-200"
                     } disabled:opacity-50`}
                   >
                     <Mic className="w-3 h-3 inline mr-1" />Audio
@@ -565,7 +565,7 @@ export default function DayDetailPage() {
                     onClick={() => recState === "idle" && setRecMode("video")}
                     disabled={recState !== "idle"}
                     className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                      recMode === "video" ? "bg-indigo-500/20 text-indigo-400 border border-indigo-500/30" : "bg-[#1a1a1a] text-zinc-400 border border-[#2a2a2a]"
+                      recMode === "video" ? "bg-indigo-500/20 text-indigo-600 border border-indigo-200" : "bg-slate-100 text-slate-500 border border-slate-200"
                     } disabled:opacity-50`}
                   >
                     <Video className="w-3 h-3 inline mr-1" />Video
@@ -575,16 +575,16 @@ export default function DayDetailPage() {
 
               {/* Task Description */}
               {activeTask.description && (
-                <div className="p-3 rounded-lg bg-indigo-500/5 border border-indigo-500/20">
-                  <p className="text-xs text-indigo-300">{activeTask.description}</p>
+                <div className="p-3 rounded-lg bg-indigo-50 border border-indigo-200">
+                  <p className="text-xs text-indigo-500">{activeTask.description}</p>
                   {activeTask.focusArea !== "general" && (
-                    <p className="text-[10px] text-indigo-400 mt-1">Focus: {activeTask.focusArea}</p>
+                    <p className="text-[10px] text-indigo-600 mt-1">Focus: {activeTask.focusArea}</p>
                   )}
                 </div>
               )}
 
               {/* Preview Area */}
-              <div className="relative rounded-xl overflow-hidden bg-[#0a0a0a] border border-[#2a2a2a] aspect-video flex items-center justify-center">
+              <div className="relative rounded-xl overflow-hidden bg-white border border-slate-200 aspect-video flex items-center justify-center">
                 {recMode === "video" && mediaStream && recState !== "done" && (
                   <video ref={videoRef} autoPlay muted playsInline className="w-full h-full object-cover" style={{ transform: "scaleX(-1)" }} />
                 )}
@@ -596,20 +596,20 @@ export default function DayDetailPage() {
                   </div>
                 )}
                 {recState === "idle" && (
-                  <div className="flex flex-col items-center gap-3 text-zinc-600">
+                  <div className="flex flex-col items-center gap-3 text-slate-400">
                     <Mic className="w-10 h-10" />
                     <p className="text-sm">Ready to record</p>
                   </div>
                 )}
                 {(recState === "recording" || recState === "paused") && (
-                  <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-black/60 backdrop-blur-sm border border-[#2a2a2a]">
-                    <span className="text-sm font-mono text-white">{formatTime(duration)}</span>
+                  <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-black/60 backdrop-blur-sm border border-slate-200">
+                    <span className="text-sm font-mono text-slate-900">{formatTime(duration)}</span>
                   </div>
                 )}
                 {recState === "recording" && (
-                  <div className="absolute top-3 left-3 flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 border border-red-500/30">
+                  <div className="absolute top-3 left-3 flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 border border-red-200">
                     <motion.span className="w-2 h-2 rounded-full bg-red-500" animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 1 }} />
-                    <span className="text-xs font-semibold text-red-400">REC</span>
+                    <span className="text-xs font-semibold text-red-600">REC</span>
                   </div>
                 )}
               </div>
@@ -617,40 +617,40 @@ export default function DayDetailPage() {
               {/* Controls */}
               <div className="flex items-center justify-center gap-3">
                 {recState === "idle" && (
-                  <button onClick={startRecording} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-medium transition-all">
+                  <button onClick={startRecording} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-slate-900 font-medium transition-all">
                     <div className="w-4 h-4 rounded-full bg-red-500" />
                     Start Recording
                   </button>
                 )}
                 {recState === "recording" && (
                   <>
-                    <button onClick={pauseRecording} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 font-medium">
+                    <button onClick={pauseRecording} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-yellow-50 border border-yellow-500/20 text-yellow-600 font-medium">
                       <Pause className="w-4 h-4" /> Pause
                     </button>
-                    <button onClick={stopRecording} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 font-medium">
+                    <button onClick={stopRecording} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-50 border border-red-200 text-red-600 font-medium">
                       <Square className="w-4 h-4" /> Stop
                     </button>
                   </>
                 )}
                 {recState === "paused" && (
                   <>
-                    <button onClick={resumeRecording} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-medium">
+                    <button onClick={resumeRecording} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 font-medium">
                       <Play className="w-4 h-4" /> Resume
                     </button>
-                    <button onClick={stopRecording} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 font-medium">
+                    <button onClick={stopRecording} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-50 border border-red-200 text-red-600 font-medium">
                       <Square className="w-4 h-4" /> Stop
                     </button>
                   </>
                 )}
                 {recState === "done" && (
-                  <button onClick={resetRecording} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#1a1a1a] border border-[#2a2a2a] text-zinc-300 font-medium">
+                  <button onClick={resetRecording} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 font-medium">
                     <RotateCcw className="w-4 h-4" /> Record Again
                   </button>
                 )}
               </div>
 
               {error && (
-                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">
                   <AlertCircle className="w-4 h-4" /> {error}
                 </div>
               )}
@@ -659,50 +659,50 @@ export default function DayDetailPage() {
 
           {/* Recordings List */}
           {recordings.length > 0 && (
-            <div className="rounded-xl bg-[#111] border border-[#2a2a2a] p-5 space-y-4">
-              <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                <FileText className="w-4 h-4 text-indigo-400" /> Recordings ({recordings.length})
+            <div className="rounded-xl bg-white border border-slate-200 p-5 space-y-4">
+              <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                <FileText className="w-4 h-4 text-indigo-600" /> Recordings ({recordings.length})
               </h3>
               {recordings.map((rec) => {
                 const task = dayPlan?.tasks.find((t) => t.id === rec.taskId);
                 const isExpanded = expandedRecording === rec.id;
                 return (
-                  <div key={rec.id} className="rounded-lg border border-[#2a2a2a] overflow-hidden">
+                  <div key={rec.id} className="rounded-lg border border-slate-200 overflow-hidden">
                     {/* Recording Header */}
                     <button
                       onClick={() => setExpandedRecording(isExpanded ? null : rec.id)}
-                      className="w-full flex items-center justify-between p-4 hover:bg-[#1a1a1a] transition-colors"
+                      className="w-full flex items-center justify-between p-4 hover:bg-slate-100 transition-colors"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
-                          <Mic className="w-4 h-4 text-indigo-400" />
+                        <div className="w-8 h-8 rounded-lg bg-indigo-50 border border-indigo-200 flex items-center justify-center">
+                          <Mic className="w-4 h-4 text-indigo-600" />
                         </div>
                         <div className="text-left">
-                          <p className="text-sm font-medium text-white">{task?.title || "Recording"}</p>
-                          <p className="text-[10px] text-zinc-500">
+                          <p className="text-sm font-medium text-slate-900">{task?.title || "Recording"}</p>
+                          <p className="text-[10px] text-slate-400">
                             {formatTime(rec.duration)} • {new Date(rec.timestamp).toLocaleTimeString()}
                           </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        {rec.isUploading && <Loader2 className="w-4 h-4 text-blue-400 animate-spin" />}
-                        {rec.isTranscribing && <Loader2 className="w-4 h-4 text-indigo-400 animate-spin" />}
+                        {rec.isUploading && <Loader2 className="w-4 h-4 text-blue-600 animate-spin" />}
+                        {rec.isTranscribing && <Loader2 className="w-4 h-4 text-indigo-600 animate-spin" />}
                         {rec.s3Url && !rec.isUploading && (
-                          <span className="text-[9px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                          <span className="text-[9px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-200">
                             Saved
                           </span>
                         )}
                         {isValidTranscript(rec.transcript) && !rec.aiReview && !rec.isReviewing && (
-                          <span className="text-[9px] px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
+                          <span className="text-[9px] px-2 py-0.5 rounded-full bg-yellow-50 text-yellow-600 border border-yellow-500/20">
                             Ready for review
                           </span>
                         )}
                         {rec.aiReview && (
-                          <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                          <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200">
                             Score: {rec.aiReview.overallScore}/100
                           </span>
                         )}
-                        {isExpanded ? <ChevronUp className="w-4 h-4 text-zinc-500" /> : <ChevronDown className="w-4 h-4 text-zinc-500" />}
+                        {isExpanded ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
                       </div>
                     </button>
 
@@ -713,12 +713,12 @@ export default function DayDetailPage() {
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: "auto", opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
-                          className="border-t border-[#2a2a2a] overflow-hidden"
+                          className="border-t border-slate-200 overflow-hidden"
                         >
                           <div className="p-4 space-y-4">
                             {/* Upload Status */}
                             {rec.isUploading && (
-                              <div className="flex items-center gap-2 text-xs text-indigo-400">
+                              <div className="flex items-center gap-2 text-xs text-indigo-600">
                                 <Loader2 className="w-3.5 h-3.5 animate-spin" /> Uploading to cloud...
                               </div>
                             )}
@@ -732,19 +732,19 @@ export default function DayDetailPage() {
 
                             {/* Transcript */}
                             <div>
-                              <h4 className="text-xs font-semibold text-zinc-400 mb-2 flex items-center gap-1.5">
+                              <h4 className="text-xs font-semibold text-slate-500 mb-2 flex items-center gap-1.5">
                                 <FileText className="w-3.5 h-3.5" /> Transcript
                               </h4>
                               {rec.isTranscribing ? (
-                                <div className="flex items-center gap-2 text-sm text-zinc-500">
+                                <div className="flex items-center gap-2 text-sm text-slate-400">
                                   <Loader2 className="w-4 h-4 animate-spin" /> Transcribing...
                                 </div>
                               ) : rec.transcript ? (
-                                <p className="text-sm text-zinc-300 leading-relaxed bg-[#0a0a0a] p-3 rounded-lg border border-[#2a2a2a] max-h-48 overflow-y-auto">
+                                <p className="text-sm text-slate-600 leading-relaxed bg-white p-3 rounded-lg border border-slate-200 max-h-48 overflow-y-auto">
                                   {rec.transcript}
                                 </p>
                               ) : (
-                                <p className="text-sm text-zinc-600">No transcript available</p>
+                                <p className="text-sm text-slate-400">No transcript available</p>
                               )}
                             </div>
 
@@ -765,7 +765,7 @@ export default function DayDetailPage() {
 
                             {/* AI Review Error */}
                             {reviewError && (
-                              <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+                              <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">
                                 <AlertCircle className="w-4 h-4 shrink-0" /> {reviewError}
                               </div>
                             )}
@@ -773,8 +773,8 @@ export default function DayDetailPage() {
                             {/* AI Review Results */}
                             {rec.aiReview && (
                               <div className="space-y-3">
-                                <h4 className="text-xs font-semibold text-zinc-400 flex items-center gap-1.5">
-                                  <Sparkles className="w-3.5 h-3.5 text-indigo-400" /> AI Review
+                                <h4 className="text-xs font-semibold text-slate-500 flex items-center gap-1.5">
+                                  <Sparkles className="w-3.5 h-3.5 text-indigo-600" /> AI Review
                                 </h4>
 
                                 {/* Scores */}
@@ -786,9 +786,9 @@ export default function DayDetailPage() {
                                     { label: "Pause", score: rec.aiReview.pauseScore, color: "amber" },
                                     { label: "Storytelling", score: rec.aiReview.storytellingScore, color: "emerald" },
                                   ].map((s) => (
-                                    <div key={s.label} className="p-2 rounded-lg bg-[#0a0a0a] border border-[#2a2a2a] text-center">
-                                      <p className="text-lg font-bold text-white">{s.score}</p>
-                                      <p className="text-[10px] text-zinc-500">{s.label}</p>
+                                    <div key={s.label} className="p-2 rounded-lg bg-white border border-slate-200 text-center">
+                                      <p className="text-lg font-bold text-slate-900">{s.score}</p>
+                                      <p className="text-[10px] text-slate-400">{s.label}</p>
                                     </div>
                                   ))}
                                 </div>
@@ -796,11 +796,11 @@ export default function DayDetailPage() {
                                 {/* Strengths */}
                                 {rec.aiReview.strengths?.length > 0 && (
                                   <div>
-                                    <p className="text-xs font-medium text-emerald-400 mb-1">Strengths</p>
+                                    <p className="text-xs font-medium text-emerald-600 mb-1">Strengths</p>
                                     <ul className="space-y-1">
                                       {rec.aiReview.strengths.map((s, i) => (
-                                        <li key={i} className="text-xs text-zinc-400 flex items-start gap-1.5">
-                                          <CheckCircle2 className="w-3 h-3 text-emerald-400 mt-0.5 shrink-0" /> {s}
+                                        <li key={i} className="text-xs text-slate-500 flex items-start gap-1.5">
+                                          <CheckCircle2 className="w-3 h-3 text-emerald-600 mt-0.5 shrink-0" /> {s}
                                         </li>
                                       ))}
                                     </ul>
@@ -810,11 +810,11 @@ export default function DayDetailPage() {
                                 {/* Improvements */}
                                 {rec.aiReview.improvements?.length > 0 && (
                                   <div>
-                                    <p className="text-xs font-medium text-amber-400 mb-1">Areas to Improve</p>
+                                    <p className="text-xs font-medium text-amber-600 mb-1">Areas to Improve</p>
                                     <ul className="space-y-1">
                                       {rec.aiReview.improvements.map((s, i) => (
-                                        <li key={i} className="text-xs text-zinc-400 flex items-start gap-1.5">
-                                          <Target className="w-3 h-3 text-amber-400 mt-0.5 shrink-0" /> {s}
+                                        <li key={i} className="text-xs text-slate-500 flex items-start gap-1.5">
+                                          <Target className="w-3 h-3 text-amber-600 mt-0.5 shrink-0" /> {s}
                                         </li>
                                       ))}
                                     </ul>
@@ -822,19 +822,19 @@ export default function DayDetailPage() {
                                 )}
 
                                 {/* Detailed Feedback */}
-                                <div className="p-3 rounded-lg bg-[#0a0a0a] border border-[#2a2a2a]">
-                                  <p className="text-xs text-zinc-300 leading-relaxed whitespace-pre-wrap">
+                                <div className="p-3 rounded-lg bg-white border border-slate-200">
+                                  <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-wrap">
                                     {rec.aiReview.detailedFeedback}
                                   </p>
                                 </div>
 
                                 {/* Focus Area Feedback */}
                                 {rec.aiReview.focusAreaFeedback && (
-                                  <div className="p-3 rounded-lg bg-indigo-500/5 border border-indigo-500/20">
-                                    <p className="text-[10px] text-indigo-400 font-medium mb-1 uppercase">
+                                  <div className="p-3 rounded-lg bg-indigo-50 border border-indigo-200">
+                                    <p className="text-[10px] text-indigo-600 font-medium mb-1 uppercase">
                                       Focus: {task?.focusArea}
                                     </p>
-                                    <p className="text-xs text-indigo-300 leading-relaxed">
+                                    <p className="text-xs text-indigo-500 leading-relaxed">
                                       {rec.aiReview.focusAreaFeedback}
                                     </p>
                                   </div>
@@ -854,47 +854,47 @@ export default function DayDetailPage() {
 
         {/* Right: Day Info */}
         <div className="space-y-4">
-          <div className="rounded-xl bg-[#111] border border-[#2a2a2a] p-5">
-            <h3 className="text-sm font-semibold text-white mb-3">Day Summary</h3>
+          <div className="rounded-xl bg-white border border-slate-200 p-5">
+            <h3 className="text-sm font-semibold text-slate-900 mb-3">Day Summary</h3>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-zinc-500">Tasks</span>
-                <span className="text-white">{dayPlan?.tasks.filter((t) => t.completed).length || 0}/{dayPlan?.tasks.length || 0}</span>
+                <span className="text-slate-400">Tasks</span>
+                <span className="text-slate-900">{dayPlan?.tasks.filter((t) => t.completed).length || 0}/{dayPlan?.tasks.length || 0}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-500">Recordings</span>
-                <span className="text-white">{recordings.length}</span>
+                <span className="text-slate-400">Recordings</span>
+                <span className="text-slate-900">{recordings.length}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-500">Reviewed</span>
-                <span className="text-white">{recordings.filter((r) => r.aiReview).length}</span>
+                <span className="text-slate-400">Reviewed</span>
+                <span className="text-slate-900">{recordings.filter((r) => r.aiReview).length}</span>
               </div>
             </div>
           </div>
 
           {activeTask && (
-            <div className="rounded-xl bg-[#111] border border-[#2a2a2a] p-5">
-              <h3 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
-                <Target className="w-4 h-4 text-indigo-400" /> Active Task
+            <div className="rounded-xl bg-white border border-slate-200 p-5">
+              <h3 className="text-sm font-semibold text-slate-900 mb-2 flex items-center gap-2">
+                <Target className="w-4 h-4 text-indigo-600" /> Active Task
               </h3>
-              <p className="text-sm text-white font-medium">{activeTask.title}</p>
+              <p className="text-sm text-slate-900 font-medium">{activeTask.title}</p>
               {activeTask.description && (
-                <p className="text-xs text-zinc-400 mt-1">{activeTask.description}</p>
+                <p className="text-xs text-slate-500 mt-1">{activeTask.description}</p>
               )}
               {activeTask.focusArea !== "general" && (
-                <p className="text-xs text-indigo-400 mt-2 uppercase">Focus: {activeTask.focusArea}</p>
+                <p className="text-xs text-indigo-600 mt-2 uppercase">Focus: {activeTask.focusArea}</p>
               )}
             </div>
           )}
 
-          <div className="rounded-xl bg-[#111] border border-[#2a2a2a] p-5">
-            <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-yellow-400" /> Tips
+          <div className="rounded-xl bg-white border border-slate-200 p-5">
+            <h3 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-yellow-600" /> Tips
             </h3>
             <ul className="space-y-2">
               {["Record in a quiet space", "Speak for 2-5 minutes", "Focus on one skill at a time", "Review your AI feedback carefully"].map((tip, i) => (
-                <li key={i} className="text-xs text-zinc-400 flex items-start gap-1.5">
-                  <span className="text-indigo-400">•</span> {tip}
+                <li key={i} className="text-xs text-slate-500 flex items-start gap-1.5">
+                  <span className="text-indigo-600">•</span> {tip}
                 </li>
               ))}
             </ul>

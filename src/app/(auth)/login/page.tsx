@@ -12,7 +12,7 @@ function WaveformBackground() {
   const bars = Array.from({ length: 40 }, (_, i) => i);
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center overflow-hidden opacity-[0.06] pointer-events-none">
+    <div className="absolute inset-0 flex items-center justify-center overflow-hidden opacity-[0.08] pointer-events-none">
       <svg
         viewBox="0 0 800 200"
         className="w-full max-w-4xl"
@@ -83,7 +83,7 @@ function LoginContent() {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="relative z-10 w-full max-w-md"
       >
-        <Card className="border-[#2a2a2a] bg-[#111111]/90 backdrop-blur-sm">
+        <Card className="border-slate-200 bg-white/90 backdrop-blur-sm shadow-xl">
           <CardHeader className="items-center text-center space-y-4 pb-2">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
@@ -99,10 +99,10 @@ function LoginContent() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.5 }}
             >
-              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">
+              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">
                 Stage Academy Tracker
               </CardTitle>
-              <CardDescription className="mt-2 text-zinc-400">
+              <CardDescription className="mt-2 text-slate-500">
                 Your personal voice training companion
               </CardDescription>
             </motion.div>
@@ -113,7 +113,7 @@ function LoginContent() {
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
-                className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400"
+                className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600"
               >
                 Access denied. This account is not authorized to use this
                 application. Please sign in with the correct Google account.
@@ -124,7 +124,7 @@ function LoginContent() {
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
-                className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400"
+                className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600"
               >
                 An error occurred during sign in. Please try again.
               </motion.div>
@@ -138,11 +138,11 @@ function LoginContent() {
               <Button
                 onClick={handleSignIn}
                 disabled={isLoading}
-                className="w-full h-12 text-base font-medium bg-white text-black hover:bg-zinc-200 transition-all"
+                className="w-full h-12 text-base font-medium bg-slate-900 text-white hover:bg-slate-800 transition-all"
               >
                 {isLoading ? (
                   <div className="flex items-center gap-2">
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-black/20 border-t-black" />
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 border-t-white" />
                     Connecting...
                   </div>
                 ) : (
@@ -175,7 +175,7 @@ function LoginContent() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6, duration: 0.5 }}
-              className="text-center text-xs text-zinc-600 pt-2"
+              className="text-center text-xs text-slate-400 pt-2"
             >
               Only authorized accounts can access this application.
             </motion.p>
@@ -190,7 +190,7 @@ export default function LoginPage() {
   return (
     <Suspense fallback={
       <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-700 border-t-indigo-500" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-500" />
       </div>
     }>
       <LoginContent />

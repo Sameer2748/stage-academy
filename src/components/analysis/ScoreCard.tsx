@@ -20,7 +20,7 @@ export default function ScoreCard({ analysis, previous }: ScoreCardProps) {
   ];
 
   return (
-    <Card className="bg-[#111111] border-[#2a2a2a]">
+    <Card className="bg-white border-slate-200">
       <CardHeader>
         <CardTitle className="text-xl">Performance Scores</CardTitle>
       </CardHeader>
@@ -35,19 +35,19 @@ export default function ScoreCard({ analysis, previous }: ScoreCardProps) {
             <div key={i} className="space-y-2">
               <div className="flex justify-between items-center text-sm font-medium">
                 <div className="flex items-center gap-2">
-                  <Icon className="w-4 h-4 text-muted-foreground" />
+                  <Icon className="w-4 h-4 text-slate-500" />
                   {score.label}
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground">{score.value.toFixed(1)}/10</span>
+                  <span className="text-slate-500">{score.value.toFixed(1)}/10</span>
                   {diff && (
-                    <span className={`text-xs ${isPositive ? 'text-green-400' : Number(diff) < 0 ? 'text-red-400' : 'text-muted-foreground'}`}>
+                    <span className={`text-xs ${isPositive ? 'text-green-600' : Number(diff) < 0 ? 'text-red-600' : 'text-slate-500'}`}>
                       {isPositive ? '+' : ''}{diff}
                     </span>
                   )}
                 </div>
               </div>
-              <Progress value={score.value * 10} className="h-2 bg-[#222]" indicatorClassName={score.color} />
+              <Progress value={score.value * 10} className="h-2 bg-slate-100" indicatorClassName={score.color} />
             </div>
           );
         })}

@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 import { SidebarContext } from "@/lib/sidebar-context";
+import { ThemeProvider } from "@/lib/theme-context";
 
 function DashboardShell({ children }: { children: React.ReactNode }) {
   const { status } = useSession();
@@ -36,10 +37,10 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
 
   if (status === "loading") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0a0a0a]">
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
         <div className="flex flex-col items-center gap-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-700 border-t-indigo-500" />
-          <p className="text-sm text-zinc-500">Loading...</p>
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-500" />
+          <p className="text-sm text-slate-400">Loading...</p>
         </div>
       </div>
     );
@@ -53,7 +54,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarContext.Provider value={{ collapsed, setCollapsed, isMobile }}>
-      <div className="min-h-screen bg-[#0a0a0a]">
+      <div className="min-h-screen bg-slate-50">
         <Sidebar />
         <div
           className="transition-all duration-300"
@@ -74,7 +75,9 @@ export default function DashboardLayout({
 }) {
   return (
     <SessionProvider>
-      <DashboardShell>{children}</DashboardShell>
+      <ThemeProvider>
+        <DashboardShell>{children}</DashboardShell>
+      </ThemeProvider>
     </SessionProvider>
   );
 }

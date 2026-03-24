@@ -65,8 +65,8 @@ const chartColors = {
 function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string }>; label?: string }) {
   if (!active || !payload) return null;
   return (
-    <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 shadow-xl">
-      <p className="text-xs text-zinc-400 mb-1">{label}</p>
+    <div className="bg-slate-100 border border-slate-200 rounded-lg px-3 py-2 shadow-xl">
+      <p className="text-xs text-slate-500 mb-1">{label}</p>
       {payload.map((entry, i) => (
         <p key={i} className="text-xs" style={{ color: entry.color }}>
           {entry.name}: {typeof entry.value === "number" ? entry.value.toFixed(1) : entry.value}
@@ -154,27 +154,27 @@ export default function AnalyticsPage() {
       {/* Stats Summary */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         {[
-          { label: "Total Recordings", value: stats.totalRecordings, icon: Mic, color: "text-indigo-400" },
-          { label: "Hours Recorded", value: stats.totalHours.toFixed(1), icon: Clock, color: "text-blue-400" },
-          { label: "Best Score", value: stats.bestScore.toFixed(1), icon: Trophy, color: "text-emerald-400" },
-          { label: "Lowest Fillers", value: stats.lowestFillers, icon: TrendingDown, color: "text-orange-400" },
-          { label: "Current Streak", value: `${stats.currentStreak}d`, icon: Flame, color: "text-amber-400" },
-          { label: "Longest Streak", value: `${stats.longestStreak}d`, icon: Award, color: "text-purple-400" },
+          { label: "Total Recordings", value: stats.totalRecordings, icon: Mic, color: "text-indigo-600" },
+          { label: "Hours Recorded", value: stats.totalHours.toFixed(1), icon: Clock, color: "text-blue-600" },
+          { label: "Best Score", value: stats.bestScore.toFixed(1), icon: Trophy, color: "text-emerald-600" },
+          { label: "Lowest Fillers", value: stats.lowestFillers, icon: TrendingDown, color: "text-orange-600" },
+          { label: "Current Streak", value: `${stats.currentStreak}d`, icon: Flame, color: "text-amber-600" },
+          { label: "Longest Streak", value: `${stats.longestStreak}d`, icon: Award, color: "text-purple-600" },
         ].map((stat) => (
           <Card
             key={stat.label}
-            className="p-4 bg-[#111111] border-[#2a2a2a] text-center"
+            className="p-4 bg-white border-slate-200 text-center"
           >
             <stat.icon className={`w-5 h-5 mx-auto mb-1 ${stat.color}`} />
-            <p className="text-xl font-bold text-white">{stat.value}</p>
-            <p className="text-[10px] text-zinc-500">{stat.label}</p>
+            <p className="text-xl font-bold text-slate-900">{stat.value}</p>
+            <p className="text-[10px] text-slate-400">{stat.label}</p>
           </Card>
         ))}
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* Chart 1: Filler Word Trend */}
-        <Card className="p-6 bg-[#111111] border-[#2a2a2a]">
+        <Card className="p-6 bg-white border-slate-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-sm">Filler Word Trend</h3>
             <div className="flex gap-1">
@@ -185,7 +185,7 @@ export default function AnalyticsPage() {
                   className={`text-[10px] px-2 py-0.5 rounded-full border transition-colors ${
                     visibleFillers[key]
                       ? "border-transparent"
-                      : "border-[#2a2a2a] opacity-40"
+                      : "border-slate-200 opacity-40"
                   }`}
                   style={{
                     backgroundColor: visibleFillers[key]
@@ -201,7 +201,7 @@ export default function AnalyticsPage() {
           </div>
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={data.fillerTrend}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1a1a1a" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis dataKey="date" tick={{ fill: "#6b7280", fontSize: 10 }} />
               <YAxis tick={{ fill: "#6b7280", fontSize: 10 }} />
               <Tooltip content={<CustomTooltip />} />
@@ -215,7 +215,7 @@ export default function AnalyticsPage() {
         </Card>
 
         {/* Chart 2: Score History */}
-        <Card className="p-6 bg-[#111111] border-[#2a2a2a]">
+        <Card className="p-6 bg-white border-slate-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-sm">Score History</h3>
             <div className="flex gap-1">
@@ -226,7 +226,7 @@ export default function AnalyticsPage() {
                   className={`text-[10px] px-2 py-0.5 rounded-full border transition-colors ${
                     visibleScores[key]
                       ? "border-transparent"
-                      : "border-[#2a2a2a] opacity-40"
+                      : "border-slate-200 opacity-40"
                   }`}
                   style={{
                     backgroundColor: visibleScores[key]
@@ -242,7 +242,7 @@ export default function AnalyticsPage() {
           </div>
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={data.scoreHistory}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1a1a1a" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis dataKey="date" tick={{ fill: "#6b7280", fontSize: 10 }} />
               <YAxis domain={[0, 10]} tick={{ fill: "#6b7280", fontSize: 10 }} />
               <Tooltip content={<CustomTooltip />} />
@@ -256,7 +256,7 @@ export default function AnalyticsPage() {
         </Card>
 
         {/* Chart 3: Weekly Completion Heatmap */}
-        <Card className="p-6 bg-[#111111] border-[#2a2a2a]">
+        <Card className="p-6 bg-white border-slate-200">
           <h3 className="font-semibold text-sm mb-4">Recording Activity</h3>
           <div className="flex flex-wrap gap-1">
             {data.heatmap.map((day, i) => (
@@ -267,7 +267,7 @@ export default function AnalyticsPage() {
                 style={{
                   backgroundColor:
                     day.level === 0
-                      ? "#1a1a1a"
+                      ? "#f1f5f9"
                       : day.level === 1
                         ? "#6366F140"
                         : "#6366F1",
@@ -275,9 +275,9 @@ export default function AnalyticsPage() {
               />
             ))}
           </div>
-          <div className="flex items-center gap-3 mt-3 text-[10px] text-zinc-500">
+          <div className="flex items-center gap-3 mt-3 text-[10px] text-slate-400">
             <div className="flex items-center gap-1">
-              <div className="w-3 h-3 rounded-sm bg-[#1a1a1a]" />
+              <div className="w-3 h-3 rounded-sm bg-slate-100" />
               None
             </div>
             <div className="flex items-center gap-1">
@@ -292,26 +292,26 @@ export default function AnalyticsPage() {
         </Card>
 
         {/* Chart 4: Recording Duration */}
-        <Card className="p-6 bg-[#111111] border-[#2a2a2a]">
+        <Card className="p-6 bg-white border-slate-200">
           <h3 className="font-semibold text-sm mb-4">Recording Duration</h3>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={data.durationHistory}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1a1a1a" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis dataKey="date" tick={{ fill: "#6b7280", fontSize: 10 }} />
               <YAxis tick={{ fill: "#6b7280", fontSize: 10 }} />
               <Tooltip content={<CustomTooltip />} />
               <Bar dataKey="duration" fill="#6366F1" radius={[4, 4, 0, 0]} name="Duration (s)" />
-              <Bar dataKey="recommended" fill="#2a2a2a" radius={[4, 4, 0, 0]} name="Recommended" />
+              <Bar dataKey="recommended" fill="#e2e8f0" radius={[4, 4, 0, 0]} name="Recommended" />
             </BarChart>
           </ResponsiveContainer>
         </Card>
 
         {/* Chart 5: Words Per Minute */}
-        <Card className="p-6 bg-[#111111] border-[#2a2a2a]">
+        <Card className="p-6 bg-white border-slate-200">
           <h3 className="font-semibold text-sm mb-4">Words Per Minute</h3>
           <ResponsiveContainer width="100%" height={280}>
             <AreaChart data={data.wpmHistory}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1a1a1a" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis dataKey="date" tick={{ fill: "#6b7280", fontSize: 10 }} />
               <YAxis domain={[80, 220]} tick={{ fill: "#6b7280", fontSize: 10 }} />
               <Tooltip content={<CustomTooltip />} />
@@ -322,16 +322,16 @@ export default function AnalyticsPage() {
           </ResponsiveContainer>
           <div className="flex items-center justify-center gap-2 mt-2">
             <div className="h-px w-8 bg-emerald-500/40" />
-            <span className="text-[10px] text-zinc-500">Ideal range: 130-160 WPM</span>
+            <span className="text-[10px] text-slate-400">Ideal range: 130-160 WPM</span>
             <div className="h-px w-8 bg-emerald-500/40" />
           </div>
         </Card>
 
         {/* Chart 6: Phase Comparison Radar */}
-        <Card className="p-6 bg-[#111111] border-[#2a2a2a]">
+        <Card className="p-6 bg-white border-slate-200">
           <h3 className="font-semibold text-sm mb-4">Phase Comparison</h3>
           {data.phaseRadar.length === 0 ? (
-            <div className="flex items-center justify-center h-64 text-sm text-zinc-500">
+            <div className="flex items-center justify-center h-64 text-sm text-slate-400">
               Complete sessions across phases to see comparison.
             </div>
           ) : (
@@ -342,7 +342,7 @@ export default function AnalyticsPage() {
                 { subject: "Pause", ...Object.fromEntries(data.phaseRadar.map(p => [p.phase, p.pause])) },
                 { subject: "Storytelling", ...Object.fromEntries(data.phaseRadar.map(p => [p.phase, p.storytelling])) },
               ]}>
-                <PolarGrid stroke="#2a2a2a" />
+                <PolarGrid stroke="#e2e8f0" />
                 <PolarAngleAxis dataKey="subject" tick={{ fill: "#9ca3af", fontSize: 10 }} />
                 <PolarRadiusAxis domain={[0, 10]} tick={{ fill: "#6b7280", fontSize: 8 }} />
                 {data.phaseRadar.map((p, i) => (

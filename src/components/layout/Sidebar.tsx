@@ -11,6 +11,7 @@ import {
   BookOpen,
   TrendingUp,
   ClipboardList,
+  Sparkles,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -22,6 +23,7 @@ import { useSidebar } from "@/lib/sidebar-context";
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/daily-planner", label: "Daily Planner", icon: ClipboardList },
+  { href: "/ai-planner", label: "AI Planner", icon: Sparkles },
   { href: "/weekly-plan", label: "Weekly Plan", icon: Calendar },
   { href: "/library", label: "Library", icon: BookOpen },
   { href: "/progress", label: "Progress", icon: TrendingUp },
@@ -46,7 +48,7 @@ export default function Sidebar() {
   // Mobile bottom navigation
   if (isMobile) {
     return (
-      <nav className="fixed bottom-0 left-0 right-0 z-50 flex h-16 items-center justify-around border-t border-[#2a2a2a] bg-[#0f0f0f] px-2">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 flex h-16 items-center justify-around border-t border-slate-200 bg-white/95 backdrop-blur-sm px-2">
         {mobileNavItems.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
@@ -57,8 +59,8 @@ export default function Sidebar() {
               className={cn(
                 "flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-xs transition-colors",
                 isActive
-                  ? "text-indigo-400"
-                  : "text-zinc-500 hover:text-zinc-300"
+                  ? "text-indigo-600"
+                  : "text-slate-400 hover:text-slate-600"
               )}
             >
               <Icon className="h-5 w-5" />
@@ -74,17 +76,17 @@ export default function Sidebar() {
     <TooltipProvider delayDuration={0}>
       <aside
         className={cn(
-          "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-[#2a2a2a] bg-[#0f0f0f] transition-all duration-300",
+          "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-slate-200 bg-white transition-all duration-300",
           collapsed ? "w-[68px]" : "w-[240px]"
         )}
       >
         {/* Logo */}
-        <div className="flex h-16 items-center gap-3 border-b border-[#2a2a2a] px-4">
+        <div className="flex h-16 items-center gap-3 border-b border-slate-200 px-4">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600">
             <Mic className="h-4 w-4 text-white" />
           </div>
           {!collapsed && (
-            <span className="text-sm font-semibold text-white truncate">
+            <span className="text-sm font-semibold text-slate-900 truncate">
               Stage Academy
             </span>
           )}
@@ -104,14 +106,14 @@ export default function Sidebar() {
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all",
                   isActive
-                    ? "bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-white"
-                    : "text-zinc-400 hover:bg-[#1a1a1a] hover:text-white"
+                    ? "bg-indigo-50 text-indigo-700"
+                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
                 )}
               >
                 <Icon
                   className={cn(
                     "h-5 w-5 shrink-0",
-                    isActive ? "text-indigo-400" : ""
+                    isActive ? "text-indigo-600" : ""
                   )}
                 />
                 {!collapsed && <span className="truncate">{item.label}</span>}
@@ -136,13 +138,13 @@ export default function Sidebar() {
         </nav>
 
         {/* Bottom section */}
-        <div className="border-t border-[#2a2a2a] p-3 space-y-3">
+        <div className="border-t border-slate-200 p-3 space-y-3">
           {!collapsed && (
             <div className="flex items-center gap-2 px-2">
-              <Badge variant="outline" className="text-[10px] border-blue-500/30 text-blue-400">
+              <Badge variant="phase-volume" className="text-[10px]">
                 VOLUME
               </Badge>
-              <span className="text-xs text-zinc-500">W1 / D1</span>
+              <span className="text-xs text-slate-400">W1 / D1</span>
             </div>
           )}
 
@@ -153,10 +155,10 @@ export default function Sidebar() {
             </Avatar>
             {!collapsed && (
               <div className="flex-1 min-w-0">
-                <p className="truncate text-sm font-medium text-white">
+                <p className="truncate text-sm font-medium text-slate-900">
                   {session?.user?.name || "User"}
                 </p>
-                <p className="truncate text-xs text-zinc-500">
+                <p className="truncate text-xs text-slate-400">
                   {session?.user?.email || ""}
                 </p>
               </div>
@@ -166,7 +168,7 @@ export default function Sidebar() {
           {/* Collapse toggle */}
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="flex w-full items-center justify-center rounded-lg py-1.5 text-zinc-500 hover:bg-[#1a1a1a] hover:text-zinc-300 transition-colors"
+            className="flex w-full items-center justify-center rounded-lg py-1.5 text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-colors"
           >
             {collapsed ? (
               <ChevronRight className="h-4 w-4" />

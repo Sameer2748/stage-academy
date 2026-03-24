@@ -281,21 +281,21 @@ export default function ChatbotPage() {
 
   return (
     <div className="flex-1 flex flex-col h-[calc(100vh-64px)]">
-      <div className="flex items-center justify-between p-4 border-b border-[#2a2a2a]">
+      <div className="flex items-center justify-between p-4 border-b border-slate-200">
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600">
-            <Bot className="w-4 h-4 text-white" />
+            <Bot className="w-4 h-4 text-slate-900" />
           </div>
           <div>
             <h2 className="font-semibold text-sm">AI Coach</h2>
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-slate-400">
               Powered by Grok — trained on Stage Academy methodology
             </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <Select value={contextType} onValueChange={setContextType}>
-            <SelectTrigger className="w-[140px] bg-[#111111] border-[#2a2a2a] text-xs h-8">
+            <SelectTrigger className="w-[140px] bg-white border-slate-200 text-xs h-8">
               <SelectValue placeholder="Context" />
             </SelectTrigger>
             <SelectContent>
@@ -310,7 +310,7 @@ export default function ChatbotPage() {
               value={sessionId || ""}
               onValueChange={(v) => setSessionId(v)}
             >
-              <SelectTrigger className="w-[180px] bg-[#111111] border-[#2a2a2a] text-xs h-8">
+              <SelectTrigger className="w-[180px] bg-white border-slate-200 text-xs h-8">
                 <SelectValue placeholder="Select session" />
               </SelectTrigger>
               <SelectContent>
@@ -325,7 +325,7 @@ export default function ChatbotPage() {
           <Button
             variant="outline"
             size="icon"
-            className={`h-8 w-8 border-[#2a2a2a] ${voiceEnabled ? "bg-indigo-500/20 text-indigo-400" : ""}`}
+            className={`h-8 w-8 border-slate-200 ${voiceEnabled ? "bg-indigo-500/20 text-indigo-600" : ""}`}
             onClick={() => setVoiceEnabled(!voiceEnabled)}
           >
             {voiceEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
@@ -338,12 +338,12 @@ export default function ChatbotPage() {
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-center">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mb-4">
-              <Sparkles className="w-8 h-8 text-white" />
+              <Sparkles className="w-8 h-8 text-slate-900" />
             </div>
-            <h3 className="text-lg font-semibold text-zinc-300 mb-2">
+            <h3 className="text-lg font-semibold text-slate-600 mb-2">
               Your AI Speaking Coach
             </h3>
-            <p className="text-sm text-zinc-500 max-w-md mb-6">
+            <p className="text-sm text-slate-400 max-w-md mb-6">
               Ask me anything about your speaking performance, the Stage Academy
               curriculum, or get personalized coaching advice.
             </p>
@@ -352,7 +352,7 @@ export default function ChatbotPage() {
                 <button
                   key={q}
                   onClick={() => sendMessage(q)}
-                  className="text-xs px-3 py-1.5 rounded-full border border-[#2a2a2a] bg-[#111111] text-zinc-400 hover:text-white hover:border-indigo-500/50 transition-colors"
+                  className="text-xs px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-500 hover:text-slate-900 hover:border-indigo-500/50 transition-colors"
                 >
                   {q}
                 </button>
@@ -379,17 +379,17 @@ export default function ChatbotPage() {
               className={`max-w-[75%] rounded-2xl px-4 py-3 ${
                 msg.role === "USER"
                   ? "bg-indigo-600 text-white"
-                  : "bg-[#111111] border border-[#2a2a2a] text-zinc-200"
+                  : "bg-white border border-slate-200 text-slate-700"
               }`}
             >
               <div className="text-sm whitespace-pre-wrap leading-relaxed">
                 {msg.content || (
-                  <Loader2 className="w-4 h-4 animate-spin text-zinc-500" />
+                  <Loader2 className="w-4 h-4 animate-spin text-slate-400" />
                 )}
               </div>
               <p
                 className={`text-[10px] mt-1 ${
-                  msg.role === "USER" ? "text-indigo-200" : "text-zinc-600"
+                  msg.role === "USER" ? "text-indigo-700" : "text-slate-400"
                 }`}
               >
                 {new Date(msg.createdAt).toLocaleTimeString("en-US", {
@@ -400,7 +400,7 @@ export default function ChatbotPage() {
             </div>
             {msg.role === "USER" && (
               <Avatar className="h-8 w-8 shrink-0">
-                <AvatarFallback className="bg-zinc-700 text-white text-xs">
+                <AvatarFallback className="bg-slate-200 text-slate-900 text-xs">
                   <User className="w-4 h-4" />
                 </AvatarFallback>
               </Avatar>
@@ -409,7 +409,7 @@ export default function ChatbotPage() {
         ))}
 
         {isSpeaking && (
-          <div className="flex items-center gap-2 text-xs text-indigo-400">
+          <div className="flex items-center gap-2 text-xs text-indigo-600">
             <Volume2 className="w-4 h-4 animate-pulse" />
             Speaking...
           </div>
@@ -418,12 +418,12 @@ export default function ChatbotPage() {
 
       {/* Suggested Chips */}
       {messages.length > 0 && !streaming && (
-        <div className="px-4 py-2 flex flex-wrap gap-1.5 border-t border-[#2a2a2a]">
+        <div className="px-4 py-2 flex flex-wrap gap-1.5 border-t border-slate-200">
           {currentSuggestions.slice(0, 3).map((q) => (
             <button
               key={q}
               onClick={() => sendMessage(q)}
-              className="text-[11px] px-2.5 py-1 rounded-full border border-[#2a2a2a] bg-[#111111] text-zinc-500 hover:text-white hover:border-indigo-500/50 transition-colors"
+              className="text-[11px] px-2.5 py-1 rounded-full border border-slate-200 bg-white text-slate-400 hover:text-slate-900 hover:border-indigo-500/50 transition-colors"
             >
               {q}
             </button>
@@ -432,14 +432,14 @@ export default function ChatbotPage() {
       )}
 
       {/* Input Area */}
-      <div className="p-4 border-t border-[#2a2a2a]">
+      <div className="p-4 border-t border-slate-200">
         <div className="flex items-end gap-2">
           <Button
             variant="outline"
             size="icon"
-            className={`h-10 w-10 shrink-0 border-[#2a2a2a] ${
+            className={`h-10 w-10 shrink-0 border-slate-200 ${
               isListening
-                ? "bg-red-500/20 text-red-400 border-red-500/50"
+                ? "bg-red-500/20 text-red-600 border-red-500/50"
                 : ""
             }`}
             onClick={isListening ? stopListening : startListening}
@@ -456,7 +456,7 @@ export default function ChatbotPage() {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Ask your AI coach..."
-            className="min-h-[40px] max-h-[120px] bg-[#111111] border-[#2a2a2a] resize-none text-sm"
+            className="min-h-[40px] max-h-[120px] bg-white border-slate-200 resize-none text-sm"
             rows={1}
           />
           <Button

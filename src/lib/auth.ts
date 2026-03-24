@@ -27,10 +27,13 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async signIn({ user, account }) {
-      const allowedEmail = process.env.ALLOWED_EMAIL;
+      const allowedEmails = process.env.ALLOWED_EMAIL;
 
-      if (allowedEmail && user.email !== allowedEmail) {
-        return "/login?error=AccessDenied";
+      if (allowedEmails) {
+        const emailList = allowedEmails.split(",").map((e) => e.trim().toLowerCase());
+        if (!user.email || !emailList.includes(user.email.toLowerCase())) {
+          return "/login?error=AccessDenied";
+        }
       }
 
       // Store Google access/refresh tokens in the User model

@@ -31,7 +31,7 @@ export default function QuickStats({
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{streak} days</div>
-          <p className="text-xs text-muted-foreground">Keep it up!</p>
+          <p className="text-xs text-slate-500">Keep it up!</p>
         </CardContent>
       </Card>
       <Card>
@@ -41,7 +41,7 @@ export default function QuickStats({
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{completion} days</div>
-          <p className="text-xs text-muted-foreground">Weekly completion rate</p>
+          <p className="text-xs text-slate-500">Weekly completion rate</p>
         </CardContent>
       </Card>
       <Card>
@@ -51,7 +51,7 @@ export default function QuickStats({
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{avgScore}/10</div>
-          <p className="text-xs text-muted-foreground">Based on recent sessions</p>
+          <p className="text-xs text-slate-500">Based on recent sessions</p>
         </CardContent>
       </Card>
       <Card>
@@ -71,7 +71,7 @@ export default function QuickStats({
             >
               {fillerTrend > 0 ? `+${fillerTrend}` : fillerTrend}
             </span>{" "}
-            <span className="text-muted-foreground">from last session</span>
+            <span className="text-slate-500">from last session</span>
           </p>
         </CardContent>
       </Card>

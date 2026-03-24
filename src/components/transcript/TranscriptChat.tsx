@@ -113,10 +113,10 @@ export default function TranscriptChat({ sessionId }: TranscriptChatProps) {
   };
 
   return (
-    <Card className="bg-[#111111] border-[#2a2a2a] flex flex-col h-[500px]">
-      <CardHeader className="border-b border-[#2a2a2a] py-4">
+    <Card className="bg-white border-slate-200 flex flex-col h-[500px]">
+      <CardHeader className="border-b border-slate-200 py-4">
         <CardTitle className="text-xl flex items-center gap-2">
-          <Bot className="w-5 h-5 text-indigo-400" />
+          <Bot className="w-5 h-5 text-indigo-600" />
           AI Coach Chat
         </CardTitle>
       </CardHeader>
@@ -124,7 +124,7 @@ export default function TranscriptChat({ sessionId }: TranscriptChatProps) {
       <CardContent className="flex-1 p-0 overflow-hidden relative">
         <div ref={scrollRef} className="h-full overflow-y-auto p-4 space-y-4">
           {messages.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-muted-foreground opacity-60">
+            <div className="h-full flex flex-col items-center justify-center text-slate-500 opacity-60">
                <Bot className="w-12 h-12 mb-3" />
                <p className="text-sm">Ask your AI Coach anything about this recording.</p>
             </div>
@@ -137,7 +137,7 @@ export default function TranscriptChat({ sessionId }: TranscriptChatProps) {
                   <div className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed
                     ${msg.role === "USER" 
                       ? "bg-indigo-600 text-white rounded-br-sm" 
-                      : "bg-[#222222] border border-[#333] text-gray-200 rounded-bl-sm"
+                      : "bg-slate-100 border border-slate-200 text-slate-700 rounded-bl-sm"
                     }`}
                   >
                      <div className="flex items-center gap-2 mb-1 opacity-70">
@@ -154,7 +154,7 @@ export default function TranscriptChat({ sessionId }: TranscriptChatProps) {
           
           {isLoading && (
              <div className="flex justify-start">
-               <div className="bg-[#222222] border border-[#333] rounded-2xl rounded-bl-sm px-4 py-3 flex items-center gap-2 text-muted-foreground">
+               <div className="bg-slate-100 border border-slate-200 rounded-2xl rounded-bl-sm px-4 py-3 flex items-center gap-2 text-slate-500">
                   <Loader2 className="w-4 h-4 animate-spin" />
                   <span className="text-sm">Coach is typing...</span>
                </div>
@@ -163,13 +163,13 @@ export default function TranscriptChat({ sessionId }: TranscriptChatProps) {
         </div>
       </CardContent>
       
-      <CardFooter className="border-t border-[#2a2a2a] p-3">
+      <CardFooter className="border-t border-slate-200 p-3">
         <form onSubmit={handleSubmit} className="w-full flex gap-2">
           <Input 
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="E.g., How was my tone around the 2-minute mark?"
-            className="flex-1 bg-black border-[#333]"
+            className="flex-1 bg-black border-slate-200"
             disabled={isLoading}
           />
           <Button type="submit" size="icon" disabled={isLoading || !input.trim()} className="bg-indigo-600 hover:bg-indigo-700">

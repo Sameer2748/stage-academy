@@ -48,7 +48,7 @@ export default function RecordingControls({
 
       <div className="flex flex-col items-center gap-4 py-4">
         {/* Timer Display */}
-        <div className="text-3xl font-mono font-semibold text-white tabular-nums tracking-wider">
+        <div className="text-3xl font-mono font-semibold text-slate-900 tabular-nums tracking-wider">
           {formatDuration(duration)}
         </div>
 
@@ -58,11 +58,11 @@ export default function RecordingControls({
             <button
               onClick={handleStartClick}
               disabled={showCountdown}
-              className="group relative flex items-center justify-center w-20 h-20 rounded-full bg-red-500 hover:bg-red-600 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-[#111111] disabled:opacity-50"
+              className="group relative flex items-center justify-center w-20 h-20 rounded-full bg-red-500 hover:bg-red-600 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-white disabled:opacity-50"
             >
               {/* Pulse animation ring */}
               <span className="absolute inset-0 rounded-full bg-red-500 animate-ping opacity-20" />
-              <Mic className="w-8 h-8 text-white relative z-10" />
+              <Mic className="w-8 h-8 text-slate-900 relative z-10" />
             </button>
           )}
 
@@ -71,13 +71,13 @@ export default function RecordingControls({
               {/* Pause / Resume */}
               <button
                 onClick={isPaused ? onResumeRecording : onPauseRecording}
-                className="flex items-center justify-center w-14 h-14 rounded-full border-2 border-[#2a2a2a] bg-[#111111] hover:bg-[#1a1a1a] transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-[#111111]"
+                className="flex items-center justify-center w-14 h-14 rounded-full border-2 border-slate-200 bg-white hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-white"
                 title={isPaused ? "Resume" : "Pause"}
               >
                 {isPaused ? (
-                  <Play className="w-6 h-6 text-white" />
+                  <Play className="w-6 h-6 text-slate-900" />
                 ) : (
-                  <Pause className="w-6 h-6 text-white" />
+                  <Pause className="w-6 h-6 text-slate-900" />
                 )}
               </button>
 
@@ -96,10 +96,10 @@ export default function RecordingControls({
               {/* Stop */}
               <button
                 onClick={onStopRecording}
-                className="flex items-center justify-center w-14 h-14 rounded-full border-2 border-[#2a2a2a] bg-[#111111] hover:bg-[#1a1a1a] transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-[#111111]"
+                className="flex items-center justify-center w-14 h-14 rounded-full border-2 border-slate-200 bg-white hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-white"
                 title="Stop recording"
               >
-                <Square className="w-6 h-6 text-red-400" />
+                <Square className="w-6 h-6 text-red-600" />
               </button>
             </>
           )}
@@ -107,7 +107,7 @@ export default function RecordingControls({
           {!isRecording && hasRecording && (
             <button
               onClick={onRetake}
-              className="flex items-center gap-2 px-5 py-3 rounded-lg border border-[#2a2a2a] bg-[#111111] hover:bg-[#1a1a1a] text-white transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-[#111111]"
+              className="flex items-center gap-2 px-5 py-3 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-white"
             >
               <RotateCcw className="w-4 h-4" />
               <span className="text-sm font-medium">Retake</span>

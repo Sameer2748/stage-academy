@@ -236,8 +236,8 @@ export default function RecordingStudio({
             disabled={isRecording}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               videoEnabled
-                ? "bg-indigo-500/20 text-indigo-400 border border-indigo-500/30"
-                : "bg-[#111111] text-gray-400 border border-[#2a2a2a] hover:text-white"
+                ? "bg-indigo-500/20 text-indigo-600 border border-indigo-200"
+                : "bg-white text-gray-400 border border-slate-200 hover:text-slate-900"
             } disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             <Video className="w-4 h-4" />
@@ -248,8 +248,8 @@ export default function RecordingStudio({
             disabled={isRecording}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               !videoEnabled
-                ? "bg-indigo-500/20 text-indigo-400 border border-indigo-500/30"
-                : "bg-[#111111] text-gray-400 border border-[#2a2a2a] hover:text-white"
+                ? "bg-indigo-500/20 text-indigo-600 border border-indigo-200"
+                : "bg-white text-gray-400 border border-slate-200 hover:text-slate-900"
             } disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             <Mic className="w-4 h-4" />
@@ -258,7 +258,7 @@ export default function RecordingStudio({
         </div>
 
         {/* Video / Audio Preview Area */}
-        <div className="relative rounded-xl overflow-hidden bg-[#111111] border border-[#2a2a2a] aspect-video flex items-center justify-center">
+        <div className="relative rounded-xl overflow-hidden bg-white border border-slate-200 aspect-video flex items-center justify-center">
           {/* Live video preview */}
           {videoEnabled && mediaStream && !recordedBlob && (
             <video
@@ -273,8 +273,8 @@ export default function RecordingStudio({
           {/* Audio only mode - show waveform area */}
           {!videoEnabled && mediaStream && !recordedBlob && (
             <div className="flex flex-col items-center justify-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
-                <Mic className="w-10 h-10 text-indigo-400" />
+              <div className="w-20 h-20 rounded-full bg-indigo-50 border border-indigo-200 flex items-center justify-center">
+                <Mic className="w-10 h-10 text-indigo-600" />
               </div>
               <p className="text-gray-400 text-sm">Audio recording in progress</p>
             </div>
@@ -303,16 +303,16 @@ export default function RecordingStudio({
 
           {/* Recording indicator */}
           {isRecording && !isPaused && (
-            <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/20 border border-red-500/30">
+            <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/20 border border-red-200">
               <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
-              <span className="text-xs font-medium text-red-400">REC</span>
+              <span className="text-xs font-medium text-red-600">REC</span>
             </div>
           )}
 
           {isPaused && (
             <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-500/20 border border-yellow-500/30">
               <span className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
-              <span className="text-xs font-medium text-yellow-400">
+              <span className="text-xs font-medium text-yellow-600">
                 PAUSED
               </span>
             </div>
@@ -320,7 +320,7 @@ export default function RecordingStudio({
         </div>
 
         {/* Waveform Visualiser */}
-        <div className="rounded-xl bg-[#111111] border border-[#2a2a2a] px-4 py-2">
+        <div className="rounded-xl bg-white border border-slate-200 px-4 py-2">
           <WaveformVisualiser
             audioData={audioData}
             isActive={isRecording && !isPaused}
@@ -328,7 +328,7 @@ export default function RecordingStudio({
         </div>
 
         {/* Recording Controls */}
-        <div className="rounded-xl bg-[#111111] border border-[#2a2a2a]">
+        <div className="rounded-xl bg-white border border-slate-200">
           <RecordingControls
             isRecording={isRecording}
             isPaused={isPaused}
@@ -344,7 +344,7 @@ export default function RecordingStudio({
 
         {/* Error Display */}
         {(recordingError || uploadError) && (
-          <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+          <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">
             <AlertCircle className="w-5 h-5 shrink-0" />
             <span>{recordingError || uploadError}</span>
           </div>
@@ -354,7 +354,7 @@ export default function RecordingStudio({
         {recordedBlob && processingStage === "idle" && !uploadError && (
           <button
             onClick={handleUpload}
-            className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-[#0a0a0a]"
+            className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-white"
           >
             <Upload className="w-5 h-5" />
             Upload & Analyze
@@ -368,12 +368,12 @@ export default function RecordingStudio({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="rounded-xl bg-[#111111] border border-[#2a2a2a] p-5"
+              className="rounded-xl bg-white border border-slate-200 p-5"
             >
               <div className="flex flex-col gap-4">
                 {/* Progress bar for upload */}
                 {processingStage === "uploading" && (
-                  <div className="w-full h-2 rounded-full bg-[#2a2a2a] overflow-hidden">
+                  <div className="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
                     <motion.div
                       className="h-full bg-indigo-500 rounded-full"
                       initial={{ width: 0 }}
@@ -415,9 +415,9 @@ export default function RecordingStudio({
       {/* ─── Right Panel (40%) ────────────────────────────────────────────── */}
       <div className="flex-[2] flex flex-col gap-4">
         {/* Week / Day / Phase Header */}
-        <div className="rounded-xl bg-[#111111] border border-[#2a2a2a] p-5">
+        <div className="rounded-xl bg-white border border-slate-200 p-5">
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-2.5 py-1 text-xs font-semibold rounded-md bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 uppercase tracking-wider">
+            <span className="px-2.5 py-1 text-xs font-semibold rounded-md bg-indigo-500/20 text-indigo-600 border border-indigo-200 uppercase tracking-wider">
               {phaseLabel}
             </span>
             <span className="text-sm text-gray-500">
@@ -425,20 +425,20 @@ export default function RecordingStudio({
             </span>
           </div>
           {plan && (
-            <h2 className="text-lg font-semibold text-white">{plan.title}</h2>
+            <h2 className="text-lg font-semibold text-slate-900">{plan.title}</h2>
           )}
         </div>
 
         {/* Recording Prompt Card */}
         {todayPlan && (
-          <div className="rounded-xl bg-[#111111] border border-[#2a2a2a] p-5">
+          <div className="rounded-xl bg-white border border-slate-200 p-5">
             <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="w-4 h-4 text-indigo-400" />
-              <h3 className="text-sm font-semibold text-white uppercase tracking-wider">
+              <Sparkles className="w-4 h-4 text-indigo-600" />
+              <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">
                 Today&apos;s Exercise
               </h3>
             </div>
-            <h4 className="text-base font-medium text-white mb-2">
+            <h4 className="text-base font-medium text-slate-900 mb-2">
               {todayPlan.title}
             </h4>
             <p className="text-sm text-gray-400 leading-relaxed">
@@ -450,7 +450,7 @@ export default function RecordingStudio({
               <div className="mt-4 space-y-1.5">
                 {todayPlan.objectives.map((obj, i) => (
                   <div key={i} className="flex items-start gap-2 text-sm">
-                    <Target className="w-3.5 h-3.5 text-indigo-400 mt-0.5 shrink-0" />
+                    <Target className="w-3.5 h-3.5 text-indigo-600 mt-0.5 shrink-0" />
                     <span className="text-gray-300">{obj}</span>
                   </div>
                 ))}
@@ -460,24 +460,24 @@ export default function RecordingStudio({
         )}
 
         {/* Focus Skill Badge */}
-        <div className="rounded-xl bg-[#111111] border border-[#2a2a2a] p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
-            <Target className="w-5 h-5 text-indigo-400" />
+        <div className="rounded-xl bg-white border border-slate-200 p-4 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-indigo-50 border border-indigo-200 flex items-center justify-center">
+            <Target className="w-5 h-5 text-indigo-600" />
           </div>
           <div>
             <p className="text-xs text-gray-500 uppercase tracking-wider">
               Focus Skill
             </p>
-            <p className="text-sm font-medium text-white">{phaseLabel}</p>
+            <p className="text-sm font-medium text-slate-900">{phaseLabel}</p>
           </div>
         </div>
 
         {/* Tips Section */}
         {todayPlan?.tips && todayPlan.tips.length > 0 && (
-          <div className="rounded-xl bg-[#111111] border border-[#2a2a2a] p-5">
+          <div className="rounded-xl bg-white border border-slate-200 p-5">
             <div className="flex items-center gap-2 mb-3">
-              <Lightbulb className="w-4 h-4 text-yellow-400" />
-              <h3 className="text-sm font-semibold text-white uppercase tracking-wider">
+              <Lightbulb className="w-4 h-4 text-yellow-600" />
+              <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">
                 Tips
               </h3>
             </div>
@@ -487,7 +487,7 @@ export default function RecordingStudio({
                   key={i}
                   className="flex items-start gap-2 text-sm text-gray-400"
                 >
-                  <span className="text-indigo-400 mt-0.5">&bull;</span>
+                  <span className="text-indigo-600 mt-0.5">&bull;</span>
                   <span>{tip}</span>
                 </li>
               ))}
@@ -496,48 +496,48 @@ export default function RecordingStudio({
         )}
 
         {/* Target Metrics */}
-        <div className="rounded-xl bg-[#111111] border border-[#2a2a2a] p-5">
+        <div className="rounded-xl bg-white border border-slate-200 p-5">
           <div className="flex items-center gap-2 mb-3">
-            <Clock className="w-4 h-4 text-indigo-400" />
-            <h3 className="text-sm font-semibold text-white uppercase tracking-wider">
+            <Clock className="w-4 h-4 text-indigo-600" />
+            <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">
               Target Metrics
             </h3>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <div className="px-3 py-2 rounded-lg bg-[#0a0a0a] border border-[#2a2a2a]">
+            <div className="px-3 py-2 rounded-lg bg-white border border-slate-200">
               <p className="text-xs text-gray-500">Duration</p>
-              <p className="text-sm font-medium text-white">
+              <p className="text-sm font-medium text-slate-900">
                 {todayPlan?.estimatedDuration
                   ? formatDuration(todayPlan.estimatedDuration * 60)
                   : "3:00 - 5:00"}
               </p>
             </div>
-            <div className="px-3 py-2 rounded-lg bg-[#0a0a0a] border border-[#2a2a2a]">
+            <div className="px-3 py-2 rounded-lg bg-white border border-slate-200">
               <p className="text-xs text-gray-500">Pace</p>
-              <p className="text-sm font-medium text-white">130-160 WPM</p>
+              <p className="text-sm font-medium text-slate-900">130-160 WPM</p>
             </div>
-            <div className="px-3 py-2 rounded-lg bg-[#0a0a0a] border border-[#2a2a2a]">
+            <div className="px-3 py-2 rounded-lg bg-white border border-slate-200">
               <p className="text-xs text-gray-500">Filler Words</p>
-              <p className="text-sm font-medium text-white">&lt; 5</p>
+              <p className="text-sm font-medium text-slate-900">&lt; 5</p>
             </div>
-            <div className="px-3 py-2 rounded-lg bg-[#0a0a0a] border border-[#2a2a2a]">
+            <div className="px-3 py-2 rounded-lg bg-white border border-slate-200">
               <p className="text-xs text-gray-500">Target Score</p>
-              <p className="text-sm font-medium text-white">70+</p>
+              <p className="text-sm font-medium text-slate-900">70+</p>
             </div>
           </div>
         </div>
 
         {/* Previous Session Score */}
         {previousScore !== null && (
-          <div className="rounded-xl bg-[#111111] border border-[#2a2a2a] p-4 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-              <Trophy className="w-5 h-5 text-emerald-400" />
+          <div className="rounded-xl bg-white border border-slate-200 p-4 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center">
+              <Trophy className="w-5 h-5 text-emerald-600" />
             </div>
             <div>
               <p className="text-xs text-gray-500 uppercase tracking-wider">
                 Previous Session
               </p>
-              <p className="text-sm font-medium text-white">
+              <p className="text-sm font-medium text-slate-900">
                 Score: {Math.round(previousScore)}/100
               </p>
             </div>
@@ -545,7 +545,7 @@ export default function RecordingStudio({
         )}
 
         {/* Recording Filename Preview */}
-        <div className="rounded-xl bg-[#111111] border border-[#2a2a2a] p-4 flex items-center gap-3">
+        <div className="rounded-xl bg-white border border-slate-200 p-4 flex items-center gap-3">
           <FileText className="w-4 h-4 text-gray-500 shrink-0" />
           <p className="text-xs text-gray-500 truncate font-mono">
             {recordingFilename}
@@ -582,23 +582,23 @@ function ProcessingStep({
   return (
     <div className="flex items-center gap-2">
       {isComplete ? (
-        <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+        <CheckCircle2 className="w-5 h-5 text-emerald-600" />
       ) : isActive ? (
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
         >
-          <Loader2 className="w-5 h-5 text-indigo-400" />
+          <Loader2 className="w-5 h-5 text-indigo-600" />
         </motion.div>
       ) : (
-        <div className="w-5 h-5 rounded-full border-2 border-[#2a2a2a]" />
+        <div className="w-5 h-5 rounded-full border-2 border-slate-200" />
       )}
       <span
         className={`text-sm font-medium ${
           isActive
-            ? "text-indigo-400"
+            ? "text-indigo-600"
             : isComplete
-              ? "text-emerald-400"
+              ? "text-emerald-600"
               : "text-gray-600"
         }`}
       >

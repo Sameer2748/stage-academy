@@ -122,28 +122,28 @@ export default function CalendarPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Calendar</h2>
-          <p className="text-sm text-zinc-500 mt-1">
+          <p className="text-sm text-slate-400 mt-1">
             Sync your practice schedule with Google Calendar
           </p>
         </div>
       </div>
 
       {/* Connection Status */}
-      <Card className="p-6 bg-[#111111] border-[#2a2a2a]">
+      <Card className="p-6 bg-white border-slate-200">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div
               className={`w-12 h-12 rounded-lg flex items-center justify-center ${
                 connected
-                  ? "bg-emerald-500/20 text-emerald-400"
-                  : "bg-zinc-800 text-zinc-500"
+                  ? "bg-emerald-500/20 text-emerald-600"
+                  : "bg-slate-100 text-slate-400"
               }`}
             >
               <CalendarDays className="w-6 h-6" />
             </div>
             <div>
               <h3 className="font-semibold text-sm">Google Calendar</h3>
-              <p className="text-xs text-zinc-500">
+              <p className="text-xs text-slate-400">
                 {connected
                   ? "Connected — events will sync automatically"
                   : "Connect to create recording reminders"}
@@ -168,24 +168,24 @@ export default function CalendarPage() {
       {connected && (
         <>
           {/* Create Recording Reminders */}
-          <Card className="p-6 bg-[#111111] border-[#2a2a2a]">
+          <Card className="p-6 bg-white border-slate-200">
             <h3 className="font-semibold text-sm mb-4">
               Create Recording Reminders
             </h3>
             <div className="space-y-4">
               <div>
-                <label className="text-xs text-zinc-400 mb-2 block">
+                <label className="text-xs text-slate-500 mb-2 block">
                   Reminder Time
                 </label>
                 <Input
                   type="time"
                   value={reminderTime}
                   onChange={(e) => setReminderTime(e.target.value)}
-                  className="bg-[#0a0a0a] border-[#2a2a2a] w-40"
+                  className="bg-white border-slate-200 w-40"
                 />
               </div>
               <div>
-                <label className="text-xs text-zinc-400 mb-2 block">
+                <label className="text-xs text-slate-500 mb-2 block">
                   Days of Week
                 </label>
                 <div className="flex gap-2">
@@ -196,7 +196,7 @@ export default function CalendarPage() {
                       className={`w-10 h-10 rounded-lg text-xs font-medium transition-colors ${
                         selectedDays.includes(day.value)
                           ? "bg-indigo-600 text-white"
-                          : "bg-[#0a0a0a] border border-[#2a2a2a] text-zinc-500 hover:text-zinc-300"
+                          : "bg-white border border-slate-200 text-slate-400 hover:text-slate-600"
                       }`}
                     >
                       {day.label}
@@ -217,7 +217,7 @@ export default function CalendarPage() {
                   variant="outline"
                   onClick={syncPlan}
                   disabled={syncing}
-                  className="border-[#2a2a2a] gap-2"
+                  className="border-slate-200 gap-2"
                 >
                   <RefreshCw
                     className={`w-4 h-4 ${syncing ? "animate-spin" : ""}`}
@@ -229,10 +229,10 @@ export default function CalendarPage() {
           </Card>
 
           {/* Upcoming Events */}
-          <Card className="p-6 bg-[#111111] border-[#2a2a2a]">
+          <Card className="p-6 bg-white border-slate-200">
             <h3 className="font-semibold text-sm mb-4">Upcoming Events</h3>
             {events.length === 0 ? (
-              <p className="text-sm text-zinc-500 text-center py-8">
+              <p className="text-sm text-slate-400 text-center py-8">
                 No upcoming events. Create recording reminders to get started.
               </p>
             ) : (
@@ -244,19 +244,19 @@ export default function CalendarPage() {
                     <div
                       key={event.id}
                       className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
-                        isPast ? "opacity-50" : "hover:bg-[#1a1a1a]"
+                        isPast ? "opacity-50" : "hover:bg-slate-100"
                       }`}
                     >
                       {event.isRecorded ? (
-                        <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                        <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
                       ) : (
-                        <Circle className="w-5 h-5 text-zinc-600 shrink-0" />
+                        <Circle className="w-5 h-5 text-slate-400 shrink-0" />
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-zinc-200 truncate">
+                        <p className="text-sm font-medium text-slate-700 truncate">
                           {event.title}
                         </p>
-                        <div className="flex items-center gap-2 text-xs text-zinc-500 mt-0.5">
+                        <div className="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
                           <Clock className="w-3 h-3" />
                           <span>
                             {eventDate.toLocaleDateString("en-US", {
@@ -281,7 +281,7 @@ export default function CalendarPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="border-[#2a2a2a] text-xs shrink-0"
+                          className="border-slate-200 text-xs shrink-0"
                           asChild
                         >
                           <a href="/record">Record</a>
