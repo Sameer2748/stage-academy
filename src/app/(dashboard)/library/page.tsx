@@ -51,20 +51,17 @@ export default function LibraryPage() {
   const [selectedVideoIndex, setSelectedVideoIndex] = useState<number | null>(null);
   const [showPdfSection, setShowPdfSection] = useState(false);
   const [selectedPdfIndex, setSelectedPdfIndex] = useState<number | null>(null);
-  const [watchedVideos, setWatchedVideos] = useState<Set<string>>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const saved = localStorage.getItem("watched-videos");
-        return saved ? new Set(JSON.parse(saved)) : new Set();
-      } catch { return new Set(); }
-    }
-    return new Set();
-  });
+  const [watchedVideos, setWatchedVideos] = useState<Set<string>>(new Set());
 
-  // Persist watched videos to localStorage
+  // Load watched videos from API
   useEffect(() => {
-    localStorage.setItem("watched-videos", JSON.stringify([...watchedVideos]));
-  }, [watchedVideos]);
+    fetch("/api/library/watched")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.watchedIds) setWatchedVideos(new Set(data.watchedIds));
+      })
+      .catch(() => {});
+  }, []);
 
   const selectedModule = selectedModuleIndex !== null ? COURSE_MODULES[selectedModuleIndex] : null;
   const selectedVideo = selectedModule && selectedVideoIndex !== null ? selectedModule.videos[selectedVideoIndex] : null;
@@ -81,6 +78,12 @@ export default function LibraryPage() {
       else next.add(videoId);
       return next;
     });
+    // Persist to API
+    fetch("/api/library/watched", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ driveFileId: videoId }),
+    }).catch(() => {});
   };
 
   const goToPrevVideo = () => {

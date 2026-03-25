@@ -25,20 +25,20 @@ export default function DashboardPage() {
   const [weekPlan, setWeekPlan] = useState<any>(null);
   const [currentWeek, setCurrentWeek] = useState(1);
 
-  useEffect(() => {
-    // Load watched videos from localStorage
-    try {
-      const saved = localStorage.getItem("watched-videos");
-      if (saved) setWatchedVideos(new Set(JSON.parse(saved)));
-    } catch {}
+  const [totalRecordings, setTotalRecordings] = useState(0);
+  const [totalReviewed, setTotalReviewed] = useState(0);
 
-    // Load current week plan
-    try {
-      const savedWeek = localStorage.getItem("current-week") || "1";
-      setCurrentWeek(parseInt(savedWeek));
-      const plan = localStorage.getItem(`week-plan-${savedWeek}`);
-      if (plan) setWeekPlan(JSON.parse(plan));
-    } catch {}
+  useEffect(() => {
+    fetch("/api/dashboard/summary")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.watchedVideoIds) setWatchedVideos(new Set(data.watchedVideoIds));
+        if (data.currentWeek) setCurrentWeek(data.currentWeek);
+        if (data.weeklyPlan) setWeekPlan(data.weeklyPlan);
+        setTotalRecordings(data.totalRecordings || 0);
+        setTotalReviewed(data.totalReviewed || 0);
+      })
+      .catch(() => {});
   }, []);
 
   const totalVideos = COURSE_MODULES.reduce((sum, m) => sum + m.videoCount, 0);
@@ -51,29 +51,6 @@ export default function DashboardPage() {
   const todayPlan = weekPlan?.days?.find((d: any) => d.day === dayNum);
   const todayTasks = todayPlan?.tasks || [];
   const completedTasks = todayTasks.filter((t: any) => t.completed).length;
-
-  // Get recordings count from localStorage
-  const [totalRecordings, setTotalRecordings] = useState(0);
-  const [totalReviewed, setTotalReviewed] = useState(0);
-
-  useEffect(() => {
-    let recs = 0;
-    let reviewed = 0;
-    for (let w = 1; w <= 12; w++) {
-      for (let d = 1; d <= 7; d++) {
-        try {
-          const saved = localStorage.getItem(`recordings-w${w}d${d}`);
-          if (saved) {
-            const parsed = JSON.parse(saved);
-            recs += parsed.length;
-            reviewed += parsed.filter((r: any) => r.aiReview).length;
-          }
-        } catch {}
-      }
-    }
-    setTotalRecordings(recs);
-    setTotalReviewed(reviewed);
-  }, []);
 
   const DAY_NAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 

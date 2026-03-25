@@ -92,6 +92,8 @@ model User {
   notifications     Notification[]
   settings          Settings?
   videoWatchSessions VideoWatchSession[]
+  dailyPlans        DailyPlanEntry[]
+  dayRecordings     DayRecording[]
 }
 
 // ─── Course Progress ─────────────────────────────────────────────────────────
@@ -298,6 +300,50 @@ model Settings {
   updatedAt            DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ─── Daily Plan Entry ───────────────────────────────────────────────────────
+
+model DailyPlanEntry {
+  id              String   @id @default(cuid())
+  userId          String
+  date            String   // "YYYY-MM-DD"
+  blocks          Json     @default("[]")
+  references      Json     @default("[]")
+  journalRecorded Boolean  @default(false)
+  journalDuration Int      @default(0)
+  journalUrl      String?
+  journalS3Key    String?
+  journalType     String?  // "audio" | "video"
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId])
+}
+
+// ─── Day Recording ──────────────────────────────────────────────────────────
+
+model DayRecording {
+  id         String   @id @default(cuid())
+  userId     String
+  weekNumber Int
+  dayNumber  Int
+  taskId     String
+  s3Url      String?
+  s3Key      String?
+  duration   Int      @default(0)
+  timestamp  BigInt
+  transcript String?  @db.Text
+  aiReview   Json?
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, weekNumber, dayNumber])
 }
 
 // ─── Course Module ───────────────────────────────────────────────────────────

@@ -117,55 +117,80 @@ export default function DayDetailPage() {
   const animRef = useRef<number | null>(null);
   const durationRef = useRef(0);
 
-  // Load day plan from localStorage
+  // Load day plan and recordings from API
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(`week-plan-${weekNum}`);
-      if (saved) {
-        const plan = JSON.parse(saved);
-        const day = plan.days?.find((d: DayPlan) => d.day === dayNum);
-        setDayPlan(day || null);
-      }
-    } catch { /* ignore */ }
+    // Load weekly plan
+    fetch(`/api/weekly-plan?week=${weekNum}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.plan?.days) {
+          const day = (data.plan.days as DayPlan[]).find((d) => d.day === dayNum);
+          setDayPlan(day || null);
+        }
+      })
+      .catch(() => {});
 
-    // Load recordings (restore S3 URLs for playback)
-    try {
-      const savedRecs = localStorage.getItem(`recordings-w${weekNum}d${dayNum}`);
-      if (savedRecs) {
-        const parsed = JSON.parse(savedRecs);
-        setRecordings(parsed.map((r: Recording) => ({ ...r, blob: null, url: r.s3Url || "" })));
-      }
-    } catch { /* ignore */ }
+    // Load recordings
+    fetch(`/api/day-recordings?week=${weekNum}&day=${dayNum}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.recordings) {
+          setRecordings(
+            data.recordings.map((r: any) => ({
+              ...r,
+              blob: null,
+              url: r.s3Url || "",
+            }))
+          );
+        }
+      })
+      .catch(() => {});
   }, [weekNum, dayNum]);
 
-  // Save recordings metadata to localStorage whenever they change
+  // Save recordings to API whenever they change
+  const prevRecLenRef = useRef(0);
   useEffect(() => {
-    if (recordings.length > 0) {
-      const toSave = recordings.map((r) => ({
-        id: r.id,
-        taskId: r.taskId,
-        s3Url: r.s3Url,
-        s3Key: r.s3Key,
-        duration: r.duration,
-        timestamp: r.timestamp,
-        transcript: r.transcript,
-        aiReview: r.aiReview,
-      }));
-      localStorage.setItem(`recordings-w${weekNum}d${dayNum}`, JSON.stringify(toSave));
+    // Only save when a new recording is added (not on initial load)
+    if (recordings.length > prevRecLenRef.current && prevRecLenRef.current > 0) {
+      const latest = recordings[recordings.length - 1];
+      fetch("/api/day-recordings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          weekNumber: weekNum,
+          dayNumber: dayNum,
+          taskId: latest.taskId,
+          s3Url: latest.s3Url,
+          s3Key: latest.s3Key,
+          duration: latest.duration,
+          timestamp: latest.timestamp,
+          transcript: latest.transcript,
+          aiReview: latest.aiReview,
+        }),
+      }).catch(() => {});
     }
+    prevRecLenRef.current = recordings.length;
   }, [recordings, weekNum, dayNum]);
 
-  // Save plan updates
+  // Save plan updates via API
   const saveDayPlan = (updated: DayPlan) => {
     setDayPlan(updated);
-    try {
-      const saved = localStorage.getItem(`week-plan-${weekNum}`);
-      if (saved) {
-        const plan = JSON.parse(saved);
-        plan.days = plan.days.map((d: DayPlan) => (d.day === dayNum ? updated : d));
-        localStorage.setItem(`week-plan-${weekNum}`, JSON.stringify(plan));
-      }
-    } catch { /* ignore */ }
+    // Fetch the full plan, update this day, and save
+    fetch(`/api/weekly-plan?week=${weekNum}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.plan?.days) {
+          const days = (data.plan.days as DayPlan[]).map((d) =>
+            d.day === dayNum ? updated : d
+          );
+          fetch("/api/weekly-plan", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ weekNumber: weekNum, days }),
+          }).catch(() => {});
+        }
+      })
+      .catch(() => {});
   };
 
   const toggleTask = (taskId: string) => {

@@ -67,22 +67,38 @@ function generateId() {
   return Math.random().toString(36).slice(2, 10);
 }
 
-function getStorageKey(weekNumber: number) {
-  return `week-plan-${weekNumber}`;
-}
-
-function loadPlan(weekNumber: number): WeekPlan | null {
-  if (typeof window === "undefined") return null;
+async function loadPlanFromAPI(weekNumber: number): Promise<WeekPlan | null> {
   try {
-    const saved = localStorage.getItem(getStorageKey(weekNumber));
-    return saved ? JSON.parse(saved) : null;
-  } catch {
-    return null;
-  }
+    const res = await fetch(`/api/weekly-plan?week=${weekNumber}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.plan) {
+        return {
+          id: data.plan.id,
+          weekNumber: data.plan.weekNumber,
+          phase: data.plan.phase,
+          days: data.plan.days as DayPlan[],
+        };
+      }
+    }
+  } catch {}
+  return null;
 }
 
-function savePlanToStorage(plan: WeekPlan) {
-  localStorage.setItem(getStorageKey(plan.weekNumber), JSON.stringify(plan));
+let wpSaveTimeout: NodeJS.Timeout | null = null;
+function savePlanToAPI(plan: WeekPlan) {
+  if (wpSaveTimeout) clearTimeout(wpSaveTimeout);
+  wpSaveTimeout = setTimeout(async () => {
+    try {
+      await fetch("/api/weekly-plan", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ weekNumber: plan.weekNumber, days: plan.days }),
+      });
+    } catch (err) {
+      console.error("[weekly-plan] Failed to save:", err);
+    }
+  }, 500);
 }
 
 function createEmptyWeek(weekNumber: number): WeekPlan {
@@ -108,13 +124,14 @@ export default function WeeklyPlanPage() {
   const [editingDayTitle, setEditingDayTitle] = useState("");
 
   useEffect(() => {
-    const saved = loadPlan(currentWeek);
-    setPlan(saved || createEmptyWeek(currentWeek));
+    loadPlanFromAPI(currentWeek).then((saved) => {
+      setPlan(saved || createEmptyWeek(currentWeek));
+    });
   }, [currentWeek]);
 
   const saveCurrentPlan = (updatedPlan: WeekPlan) => {
     setPlan(updatedPlan);
-    savePlanToStorage(updatedPlan);
+    savePlanToAPI(updatedPlan);
   };
 
   const updateDayTitle = (dayNum: number, title: string) => {

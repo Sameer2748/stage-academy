@@ -128,23 +128,7 @@ function formatDisplayDate(d: Date): string {
   });
 }
 
-function storageKey(date: string): string {
-  return `daily-plan-${date}`;
-}
-
-function loadPlan(date: string): DailyPlan {
-  if (typeof window === "undefined")
-    return {
-      date,
-      blocks: [],
-      references: [],
-      journalRecorded: false,
-      journalDuration: 0,
-    };
-  try {
-    const raw = localStorage.getItem(storageKey(date));
-    if (raw) return JSON.parse(raw);
-  } catch {}
+function emptyPlan(date: string): DailyPlan {
   return {
     date,
     blocks: [],
@@ -154,11 +138,33 @@ function loadPlan(date: string): DailyPlan {
   };
 }
 
-function savePlan(plan: DailyPlan) {
-  if (typeof window === "undefined") return;
+async function loadPlanFromAPI(date: string): Promise<DailyPlan> {
   try {
-    localStorage.setItem(storageKey(plan.date), JSON.stringify(plan));
-  } catch {}
+    const res = await fetch(`/api/daily-plan?date=${date}`);
+    if (res.ok) {
+      const data = await res.json();
+      return { ...emptyPlan(date), ...data };
+    }
+  } catch (err) {
+    console.error("[daily-planner] Failed to load plan:", err);
+  }
+  return emptyPlan(date);
+}
+
+let saveTimeout: NodeJS.Timeout | null = null;
+function savePlanToAPI(plan: DailyPlan) {
+  if (saveTimeout) clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(async () => {
+    try {
+      await fetch("/api/daily-plan", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(plan),
+      });
+    } catch (err) {
+      console.error("[daily-planner] Failed to save plan:", err);
+    }
+  }, 500);
 }
 
 function timeToMinutes(t: string): number {
@@ -198,7 +204,7 @@ function addDays(d: Date, n: number): Date {
 export default function DailyPlannerPage() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [plan, setPlan] = useState<DailyPlan>(() =>
-    loadPlan(formatDate(new Date()))
+    emptyPlan(formatDate(new Date()))
   );
   const [showAddForm, setShowAddForm] = useState(false);
   const [showAddRef, setShowAddRef] = useState(false);
@@ -239,40 +245,45 @@ export default function DailyPlannerPage() {
 
   // Load plan when date changes
   useEffect(() => {
-    const loaded = loadPlan(dateStr);
-    setPlan(loaded);
-    setHasRecorded(loaded.journalRecorded);
+    let cancelled = false;
     setIsRecording(false);
     setIsPaused(false);
     setRecordingTime(0);
     setShowAddForm(false);
     setShowAddRef(false);
-    if (loaded.journalType) setRecordingMode(loaded.journalType);
+    setMediaUrl(null);
 
-    // If we have an S3 key, fetch a fresh presigned URL for playback
-    if (loaded.journalS3Key) {
-      fetch("/api/s3/download-url", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key: loaded.journalS3Key }),
-      })
-        .then((r) => r.json())
-        .then((data) => {
-          if (data.downloadUrl) setMediaUrl(data.downloadUrl);
-          else setMediaUrl(null);
+    loadPlanFromAPI(dateStr).then((loaded) => {
+      if (cancelled) return;
+      setPlan(loaded);
+      setHasRecorded(loaded.journalRecorded);
+      if (loaded.journalType) setRecordingMode(loaded.journalType);
+
+      // If we have an S3 key, fetch a fresh presigned URL for playback
+      if (loaded.journalS3Key) {
+        fetch("/api/s3/download-url", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ key: loaded.journalS3Key }),
         })
-        .catch(() => setMediaUrl(null));
-    } else if (loaded.journalUrl) {
-      // Fallback to stored URL (legacy / public bucket)
-      setMediaUrl(loaded.journalUrl);
-    } else {
-      setMediaUrl(null);
-    }
+          .then((r) => r.json())
+          .then((data) => {
+            if (!cancelled && data.downloadUrl) setMediaUrl(data.downloadUrl);
+          })
+          .catch(() => {});
+      } else if (loaded.journalUrl) {
+        setMediaUrl(loaded.journalUrl);
+      }
+    });
+
+    return () => { cancelled = true; };
   }, [dateStr]);
 
-  // Auto-save
+  // Auto-save to API (debounced)
+  const planRef = useRef(plan);
+  planRef.current = plan;
   useEffect(() => {
-    savePlan(plan);
+    savePlanToAPI(plan);
   }, [plan]);
 
   // Cleanup on unmount

@@ -100,25 +100,33 @@ function generateId(): string {
   return Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
 }
 
-function storageKey(date: string): string {
-  return `daily-plan-${date}`;
-}
-
-function loadPlan(date: string): DailyPlan {
-  if (typeof window === "undefined")
-    return { date, blocks: [], references: [], journalRecorded: false, journalDuration: 0 };
+async function loadPlanFromAPI(date: string): Promise<DailyPlan> {
   try {
-    const raw = localStorage.getItem(storageKey(date));
-    if (raw) return JSON.parse(raw);
+    const res = await fetch(`/api/daily-plan?date=${date}`);
+    if (res.ok) {
+      const data = await res.json();
+      return {
+        date: data.date || date,
+        blocks: data.blocks || [],
+        references: data.references || [],
+        journalRecorded: data.journalRecorded || false,
+        journalDuration: data.journalDuration || 0,
+      };
+    }
   } catch {}
   return { date, blocks: [], references: [], journalRecorded: false, journalDuration: 0 };
 }
 
-function savePlan(plan: DailyPlan) {
-  if (typeof window === "undefined") return;
+async function savePlanToAPI(plan: DailyPlan) {
   try {
-    localStorage.setItem(storageKey(plan.date), JSON.stringify(plan));
-  } catch {}
+    await fetch("/api/daily-plan", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(plan),
+    });
+  } catch (err) {
+    console.error("[ai-planner] Failed to save plan:", err);
+  }
 }
 
 function formatTime12(t: string): string {
@@ -258,7 +266,7 @@ export default function AiPlannerPage() {
 
   // ─── Save to Daily Planner ─────────────────────────────────────
 
-  const saveToPlanner = useCallback(() => {
+  const saveToPlanner = useCallback(async () => {
     if (parsedBlocks.length === 0) return;
 
     const blocksByDate: Record<string, ParsedBlock[]> = {};
@@ -270,17 +278,17 @@ export default function AiPlannerPage() {
 
     let totalAdded = 0;
     for (const [date, blocks] of Object.entries(blocksByDate)) {
-      const plan = loadPlan(date);
+      const plan = await loadPlanFromAPI(date);
       for (const b of blocks) {
         plan.blocks.push({
           ...b,
           id: generateId(),
           completed: false,
-        });
+        } as any);
       }
       // Sort by start time
-      plan.blocks.sort((a, b) => a.startTime.localeCompare(b.startTime));
-      savePlan(plan);
+      plan.blocks.sort((a: any, b: any) => a.startTime.localeCompare(b.startTime));
+      await savePlanToAPI(plan);
       totalAdded += blocks.length;
     }
 

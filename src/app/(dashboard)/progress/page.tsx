@@ -88,12 +88,14 @@ export default function ProgressPage() {
   const [currentWeek, setCurrentWeek] = useState(1);
   const [watchedVideos, setWatchedVideos] = useState<Set<string>>(new Set());
 
-  // Load watched videos from localStorage
+  // Load watched videos from API
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("watched-videos");
-      if (saved) setWatchedVideos(new Set(JSON.parse(saved)));
-    } catch { /* ignore */ }
+    fetch("/api/library/watched")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.watchedIds) setWatchedVideos(new Set(data.watchedIds));
+      })
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
