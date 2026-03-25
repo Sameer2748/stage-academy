@@ -137,9 +137,19 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    const plan = await prisma.weeklyPlan.update({
+    const phase = weekNumber <= 3 ? "VOLUME" : weekNumber <= 6 ? "TONALITY" : weekNumber <= 9 ? "PAUSE" : "STORYTELLING";
+
+    const plan = await prisma.weeklyPlan.upsert({
       where: { userId_weekNumber: { userId: user.id, weekNumber } },
-      data: { days: days as any, wasAdjusted: true },
+      update: { days: days as any, wasAdjusted: true },
+      create: {
+        userId: user.id,
+        weekNumber,
+        phase: phase as any,
+        days: days as any,
+        isActive: true,
+        wasAdjusted: true,
+      },
     });
 
     return NextResponse.json(plan);
