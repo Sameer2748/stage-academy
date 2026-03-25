@@ -147,30 +147,22 @@ export default function DayDetailPage() {
       .catch(() => {});
   }, [weekNum, dayNum]);
 
-  // Save recordings to API whenever they change
-  const prevRecLenRef = useRef(0);
-  useEffect(() => {
-    // Only save when a new recording is added (not on initial load)
-    if (recordings.length > prevRecLenRef.current && prevRecLenRef.current > 0) {
-      const latest = recordings[recordings.length - 1];
-      fetch("/api/day-recordings", {
+  // Save a recording to the API
+  const saveRecordingToAPI = useCallback(async (rec: { taskId: string; s3Url?: string; s3Key?: string; duration: number; timestamp: number; transcript?: string; aiReview?: any }) => {
+    try {
+      await fetch("/api/day-recordings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           weekNumber: weekNum,
           dayNumber: dayNum,
-          taskId: latest.taskId,
-          s3Url: latest.s3Url,
-          s3Key: latest.s3Key,
-          duration: latest.duration,
-          timestamp: latest.timestamp,
-          transcript: latest.transcript,
-          aiReview: latest.aiReview,
+          ...rec,
         }),
-      }).catch(() => {});
+      });
+    } catch (err) {
+      console.error("[day-recordings] Failed to save:", err);
     }
-    prevRecLenRef.current = recordings.length;
-  }, [recordings, weekNum, dayNum]);
+  }, [weekNum, dayNum]);
 
   // Save plan updates via API
   const saveDayPlan = (updated: DayPlan) => {
@@ -305,17 +297,37 @@ export default function DayDetailPage() {
             setRecordings((prev) =>
               prev.map((r) => r.id === recId ? { ...r, s3Url: publicUrl, s3Key: key, url: publicUrl, isUploading: false } : r)
             );
+            // Save to DB
+            saveRecordingToAPI({
+              taskId: activeTaskId || "",
+              s3Url: publicUrl,
+              s3Key: key,
+              duration: durationRef.current,
+              timestamp: Date.now(),
+            });
           } else {
             console.error("Failed to get upload URL");
             setRecordings((prev) =>
               prev.map((r) => r.id === recId ? { ...r, isUploading: false } : r)
             );
+            // Still save to DB without S3
+            saveRecordingToAPI({
+              taskId: activeTaskId || "",
+              duration: durationRef.current,
+              timestamp: Date.now(),
+            });
           }
         } catch (err) {
           console.error("S3 upload error:", err);
           setRecordings((prev) =>
             prev.map((r) => r.id === recId ? { ...r, isUploading: false } : r)
           );
+          // Still save to DB without S3
+          saveRecordingToAPI({
+            taskId: activeTaskId || "",
+            duration: durationRef.current,
+            timestamp: Date.now(),
+          });
         }
 
         // Auto-transcribe (use blob directly, don't wait for S3)
