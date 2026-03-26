@@ -89,10 +89,10 @@ export default function DashboardPage() {
         {/* Left Column */}
         <div className="lg:col-span-2 space-y-6">
           {/* Today's Plan */}
-          <div className="rounded-xl bg-white border border-slate-200 p-5 shadow-sm">
+          <div className="rounded-xl bg-white border border-slate-200 p-4 sm:p-5 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-                <Target className="w-4 h-4 text-indigo-600" /> Today&apos;s Plan — {DAY_NAMES[dayNum - 1]}
+                <Target className="w-4 h-4 text-indigo-600 shrink-0" /> Today&apos;s Plan — {DAY_NAMES[dayNum - 1]}
               </h3>
               <Link
                 href={`/weekly-plan/day/${dayNum}?week=${currentWeek}`}
@@ -129,35 +129,37 @@ export default function DashboardPage() {
           </div>
 
           {/* Week Overview */}
-          <div className="rounded-xl bg-white border border-slate-200 p-5 shadow-sm">
+          <div className="rounded-xl bg-white border border-slate-200 p-4 sm:p-5 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-purple-600" /> Week {currentWeek} Overview
+                <Calendar className="w-4 h-4 text-purple-600 shrink-0" /> Week {currentWeek} Overview
               </h3>
               <Link href="/weekly-plan" className="text-xs text-indigo-600 hover:text-indigo-500 flex items-center gap-1">
                 View Plan <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
-            <div className="grid grid-cols-7 gap-2">
-              {DAY_NAMES.map((name, i) => {
-                const dayPlan = weekPlan?.days?.find((d: any) => d.day === i + 1);
-                const tasks = dayPlan?.tasks || [];
-                const done = tasks.filter((t: any) => t.completed).length;
-                const isToday = i + 1 === dayNum;
-                return (
-                  <Link
-                    key={name}
-                    href={`/weekly-plan/day/${i + 1}?week=${currentWeek}`}
-                    className={`text-center p-3 rounded-lg border transition-all hover:border-slate-300 ${
-                      isToday ? "border-indigo-300 bg-indigo-50" : "border-slate-200"
-                    }`}
-                  >
-                    <p className={`text-[10px] font-medium mb-1 ${isToday ? "text-indigo-600" : "text-slate-400"}`}>{name}</p>
-                    <p className="text-lg font-bold text-slate-900">{tasks.length > 0 ? `${done}/${tasks.length}` : "—"}</p>
-                    <p className="text-[9px] text-slate-400 mt-0.5">{tasks.length > 0 ? "tasks" : "empty"}</p>
-                  </Link>
-                );
-              })}
+            <div className="overflow-x-auto -mx-2 px-2 pb-1">
+              <div className="grid grid-cols-7 gap-1.5 sm:gap-2 min-w-[340px]">
+                {DAY_NAMES.map((name, i) => {
+                  const dayPlan = weekPlan?.days?.find((d: any) => d.day === i + 1);
+                  const tasks = dayPlan?.tasks || [];
+                  const done = tasks.filter((t: any) => t.completed).length;
+                  const isToday = i + 1 === dayNum;
+                  return (
+                    <Link
+                      key={name}
+                      href={`/weekly-plan/day/${i + 1}?week=${currentWeek}`}
+                      className={`text-center p-2 sm:p-3 rounded-lg border transition-all hover:border-slate-300 ${
+                        isToday ? "border-indigo-300 bg-indigo-50" : "border-slate-200"
+                      }`}
+                    >
+                      <p className={`text-[9px] sm:text-[10px] font-medium mb-0.5 sm:mb-1 ${isToday ? "text-indigo-600" : "text-slate-400"}`}>{name}</p>
+                      <p className="text-sm sm:text-lg font-bold text-slate-900">{tasks.length > 0 ? `${done}/${tasks.length}` : "—"}</p>
+                      <p className="text-[8px] sm:text-[9px] text-slate-400 mt-0.5">{tasks.length > 0 ? "tasks" : "empty"}</p>
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>

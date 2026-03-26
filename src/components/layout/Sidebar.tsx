@@ -29,8 +29,6 @@ const navItems = [
   { href: "/progress", label: "Progress", icon: TrendingUp },
 ];
 
-const mobileNavItems = navItems.slice(0, 5);
-
 export default function Sidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
@@ -45,26 +43,26 @@ export default function Sidebar() {
         .slice(0, 2)
     : "U";
 
-  // Mobile bottom navigation
+  // Mobile bottom navigation — show ALL nav items
   if (isMobile) {
     return (
-      <nav className="fixed bottom-0 left-0 right-0 z-50 flex h-16 items-center justify-around border-t border-slate-200 bg-white/95 backdrop-blur-sm px-2">
-        {mobileNavItems.map((item) => {
-          const isActive = pathname === item.href;
+      <nav className="fixed bottom-0 left-0 right-0 z-50 flex h-14 items-center justify-around border-t border-slate-200 bg-white/95 backdrop-blur-sm px-1 safe-area-bottom">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
           const Icon = item.icon;
           return (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-xs transition-colors",
+                "flex flex-col items-center justify-center gap-0.5 rounded-md px-1.5 py-1 min-w-0 flex-1 transition-colors",
                 isActive
                   ? "text-indigo-600"
                   : "text-slate-400 hover:text-slate-600"
               )}
             >
-              <Icon className="h-5 w-5" />
-              <span className="truncate">{item.label}</span>
+              <Icon className="h-4 w-4 shrink-0" />
+              <span className="text-[9px] leading-tight truncate w-full text-center">{item.label.split(" ")[0]}</span>
             </Link>
           );
         })}

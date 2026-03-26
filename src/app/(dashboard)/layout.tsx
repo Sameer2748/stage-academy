@@ -61,7 +61,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
           style={{ paddingLeft: sidebarWidth }}
         >
           <Header />
-          <main className="p-6 pb-20 md:pb-6">{children}</main>
+          <main className="p-4 sm:p-6 pb-20 md:pb-6">{children}</main>
         </div>
       </div>
     </SidebarContext.Provider>

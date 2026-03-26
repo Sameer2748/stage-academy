@@ -42,7 +42,7 @@ export default function Header() {
   const today = format(new Date(), "EEEE, MMMM d, yyyy");
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-slate-200 bg-white/80 backdrop-blur-sm px-6">
+    <header className="sticky top-0 z-30 flex h-14 sm:h-16 items-center justify-between border-b border-slate-200 bg-white/80 backdrop-blur-sm px-4 sm:px-6">
       <div>
         <h1 className="text-lg font-semibold text-slate-900">{title}</h1>
         <p className="text-xs text-slate-400">{today}</p>

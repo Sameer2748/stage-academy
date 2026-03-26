@@ -102,10 +102,28 @@ export default function LibraryPage() {
     }
   };
 
+  const [showMobileSidebar, setShowMobileSidebar] = useState(true);
+
   return (
-    <div className="flex h-[calc(100vh-64px)] overflow-hidden -m-6">
+    <div className="flex flex-col md:flex-row h-[calc(100vh-56px)] sm:h-[calc(100vh-64px)] overflow-hidden -m-4 sm:-m-6">
+      {/* Mobile toggle for sidebar / player */}
+      <div className="flex md:hidden border-b border-slate-200 bg-white">
+        <button
+          onClick={() => setShowMobileSidebar(true)}
+          className={`flex-1 py-2.5 text-xs font-medium text-center transition-colors ${showMobileSidebar ? "text-indigo-600 border-b-2 border-indigo-600" : "text-slate-400"}`}
+        >
+          Modules
+        </button>
+        <button
+          onClick={() => setShowMobileSidebar(false)}
+          className={`flex-1 py-2.5 text-xs font-medium text-center transition-colors ${!showMobileSidebar ? "text-indigo-600 border-b-2 border-indigo-600" : "text-slate-400"}`}
+        >
+          Player
+        </button>
+      </div>
+
       {/* Left Sidebar - Module List */}
-      <div className="w-72 lg:w-80 border-r border-slate-200 flex flex-col bg-white shrink-0">
+      <div className={`${showMobileSidebar ? "flex" : "hidden"} md:flex w-full md:w-72 lg:w-80 border-r border-slate-200 flex-col bg-white shrink-0 flex-1 md:flex-initial overflow-hidden`}>
         <div className="p-4 border-b border-slate-200">
           <h3 className="font-semibold text-sm mb-1">Course Library</h3>
           <div className="flex items-center gap-2 text-xs text-slate-400">
@@ -143,6 +161,7 @@ export default function LibraryPage() {
                         onClick={() => {
                           setSelectedPdfIndex(i);
                           setSelectedVideoIndex(null);
+                          setShowMobileSidebar(false);
                         }}
                         className={`w-full flex items-center gap-2 p-2 rounded text-left transition-colors ${
                           selectedPdfIndex === i
@@ -217,6 +236,7 @@ export default function LibraryPage() {
                               setSelectedVideoIndex(vidIdx);
                               setSelectedPdfIndex(null);
                               setShowPdfSection(false);
+                              setShowMobileSidebar(false);
                             }}
                             className={`w-full flex items-center gap-2 p-2 rounded text-left transition-colors ${
                               isSelected
@@ -248,13 +268,13 @@ export default function LibraryPage() {
       </div>
 
       {/* Right Panel - Video/PDF Player */}
-      <div className="flex-1 overflow-y-auto bg-white">
+      <div className={`${showMobileSidebar ? "hidden" : "flex flex-col"} md:flex md:flex-col flex-1 overflow-y-auto bg-white`}>
         {selectedPdf ? (
           /* PDF Viewer */
-          <div className="p-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold">{selectedPdf.title}</h3>
-              <Button variant="outline" className="border-slate-200 gap-2" asChild>
+          <div className="p-4 sm:p-6 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <h3 className="text-base sm:text-lg font-bold">{selectedPdf.title}</h3>
+              <Button variant="outline" className="border-slate-200 gap-2 shrink-0" asChild>
                 <a href={selectedPdf.downloadUrl} target="_blank" rel="noopener noreferrer">
                   <Download className="w-4 h-4" /> Download PDF
                 </a>
@@ -273,7 +293,7 @@ export default function LibraryPage() {
           </div>
         ) : selectedVideo ? (
           /* Video Player */
-          <div className="p-6 space-y-5">
+          <div className="p-4 sm:p-6 space-y-4 sm:space-y-5">
             {/* Video Player */}
             <div className="relative aspect-video bg-black rounded-xl overflow-hidden border border-slate-200">
               <iframe
@@ -289,7 +309,7 @@ export default function LibraryPage() {
             {/* Video Info & Actions */}
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
               <div>
-                <h3 className="text-xl font-bold">{selectedVideo.title}</h3>
+                <h3 className="text-base sm:text-xl font-bold">{selectedVideo.title}</h3>
                 {selectedModule && (
                   <div className="flex items-center gap-2 mt-1.5">
                     <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${phaseColors[selectedModule.phase] || phaseColors.INTRO}`}>

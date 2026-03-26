@@ -75,6 +75,11 @@
   color: var(--text-muted) !important;
 }
 
+/* Safe area for iPhone notch/home indicator */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 * {
   margin: 0;
   padding: 0;

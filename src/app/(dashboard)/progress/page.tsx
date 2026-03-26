@@ -229,7 +229,7 @@ export default function ProgressPage() {
 
   if (loading) {
     return (
-      <div className="flex-1 space-y-6 p-8 pt-6">
+      <div className="flex-1 space-y-6">
         <Skeleton className="h-8 w-48" />
         <div className="grid gap-4 md:grid-cols-2">
           {Array.from({ length: 4 }).map((_, i) => (
@@ -241,7 +241,7 @@ export default function ProgressPage() {
   }
 
   return (
-    <div className="flex-1 space-y-8 p-8 pt-6">
+    <div className="flex-1 space-y-6 sm:space-y-8">
       <div>
         <h2 className="text-3xl font-bold tracking-tight">Progress</h2>
         <p className="text-sm text-slate-400 mt-1">
@@ -258,7 +258,7 @@ export default function ProgressPage() {
         const overallPct = totalVideos > 0 ? (totalWatched / totalVideos) * 100 : 0;
 
         return (
-          <Card className="p-6 bg-white border-slate-200">
+          <Card className="p-4 sm:p-6 bg-white border-slate-200">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-sm">Course Video Progress</h3>
               <span className="text-sm text-slate-500 font-medium">{totalWatched}/{totalVideos} watched</span>
@@ -285,57 +285,59 @@ export default function ProgressPage() {
       })()}
 
       {/* 12-Week Timeline */}
-      <Card className="p-6 bg-white border-slate-200">
+      <Card className="p-4 sm:p-6 bg-white border-slate-200">
         <h3 className="font-semibold text-sm mb-4">12-Week Overview</h3>
-        <div className="grid grid-cols-12 gap-2">
-          {weeks.map((week) => {
-            const isCurrent = week.weekNumber === currentWeek;
-            return (
-              <div
-                key={week.weekNumber}
-                className={`relative flex flex-col items-center p-2 rounded-lg transition-all ${
-                  isCurrent
-                    ? `bg-gradient-to-b ${phaseColors[week.phase]} bg-opacity-20 ring-2 ring-white/20`
-                    : week.status === "completed"
-                      ? "bg-slate-100"
-                      : "bg-white"
-                }`}
-              >
-                <span className="text-[10px] text-slate-400 mb-1">W{week.weekNumber}</span>
-                {week.status === "completed" ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                ) : isCurrent ? (
-                  <Play className="w-4 h-4 text-slate-900 fill-white" />
-                ) : (
-                  <Circle className="w-4 h-4 text-slate-300" />
-                )}
-                {week.avgScore > 0 && (
-                  <span className="text-[10px] text-slate-500 mt-1">
-                    {week.avgScore.toFixed(1)}
-                  </span>
-                )}
-                {week.completionRate > 0 && (
-                  <div className="w-full mt-1">
-                    <div className="h-0.5 bg-slate-200 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-indigo-500 rounded-full"
-                        style={{ width: `${Math.min(week.completionRate, 100)}%` }}
-                      />
+        <div className="overflow-x-auto -mx-2 px-2 pb-2">
+          <div className="grid grid-cols-6 sm:grid-cols-12 gap-1.5 sm:gap-2 min-w-0">
+            {weeks.map((week) => {
+              const isCurrent = week.weekNumber === currentWeek;
+              return (
+                <div
+                  key={week.weekNumber}
+                  className={`relative flex flex-col items-center p-1.5 sm:p-2 rounded-lg transition-all ${
+                    isCurrent
+                      ? `bg-gradient-to-b ${phaseColors[week.phase]} bg-opacity-20 ring-2 ring-white/20`
+                      : week.status === "completed"
+                        ? "bg-slate-100"
+                        : "bg-white"
+                  }`}
+                >
+                  <span className="text-[9px] sm:text-[10px] text-slate-400 mb-0.5 sm:mb-1">W{week.weekNumber}</span>
+                  {week.status === "completed" ? (
+                    <CheckCircle2 className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-emerald-600" />
+                  ) : isCurrent ? (
+                    <Play className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-slate-900 fill-white" />
+                  ) : (
+                    <Circle className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-slate-300" />
+                  )}
+                  {week.avgScore > 0 && (
+                    <span className="text-[9px] sm:text-[10px] text-slate-500 mt-0.5 sm:mt-1">
+                      {week.avgScore.toFixed(1)}
+                    </span>
+                  )}
+                  {week.completionRate > 0 && (
+                    <div className="w-full mt-0.5 sm:mt-1">
+                      <div className="h-0.5 bg-slate-200 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-indigo-500 rounded-full"
+                          style={{ width: `${Math.min(week.completionRate, 100)}%` }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
         {/* Phase labels below timeline */}
-        <div className="grid grid-cols-4 gap-2 mt-2">
+        <div className="grid grid-cols-4 gap-1 sm:gap-2 mt-2">
           {["VOLUME", "TONALITY", "PAUSE", "STORYTELLING"].map((phase) => (
             <div
               key={phase}
               className="text-center text-[10px] text-slate-400"
             >
-              <Badge variant={phaseVariant[phase]} className="text-[9px]">
+              <Badge variant={phaseVariant[phase]} className="text-[8px] sm:text-[9px]">
                 {phase}
               </Badge>
             </div>
@@ -350,7 +352,7 @@ export default function ProgressPage() {
           return (
             <Card
               key={phase.id}
-              className={`p-6 bg-white border-slate-200 ${
+              className={`p-4 sm:p-6 bg-white border-slate-200 ${
                 isCurrent ? phaseBorderColors[phase.phase] : ""
               }`}
             >
@@ -406,7 +408,7 @@ export default function ProgressPage() {
       </div>
 
       {/* Before & After Scorecard */}
-      <Card className="p-6 bg-white border-slate-200">
+      <Card className="p-4 sm:p-6 bg-white border-slate-200">
         <div className="flex items-center gap-2 mb-4">
           <Trophy className="w-5 h-5 text-amber-600" />
           <h3 className="font-semibold text-sm">Before & After</h3>
@@ -473,7 +475,7 @@ export default function ProgressPage() {
       </Card>
 
       {/* Graduation Recordings */}
-      <Card className="p-6 bg-white border-slate-200">
+      <Card className="p-4 sm:p-6 bg-white border-slate-200">
         <h3 className="font-semibold text-sm mb-4">Graduation Recordings</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {[

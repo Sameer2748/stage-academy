@@ -500,9 +500,9 @@ export default function DayDetailPage() {
         {/* Left: Tasks + Recording */}
         <div className="lg:col-span-2 space-y-4">
           {/* Tasks Checklist */}
-          <div className="rounded-xl bg-white border border-slate-200 p-5">
+          <div className="rounded-xl bg-white border border-slate-200 p-4 sm:p-5">
             <h3 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
-              <Target className="w-4 h-4 text-indigo-600" /> Today&apos;s Tasks
+              <Target className="w-4 h-4 text-indigo-600 shrink-0" /> Today&apos;s Tasks
             </h3>
             {dayPlan?.tasks.length === 0 && (
               <p className="text-sm text-slate-400">No tasks planned for this day.</p>
@@ -550,11 +550,11 @@ export default function DayDetailPage() {
 
           {/* Task Action Panel for non-record types */}
           {activeTask && activeTask.type !== "record" && activeTask.type !== "review" && !activeTask.completed && (
-            <div className="rounded-xl bg-white border border-slate-200 p-5 space-y-3">
+            <div className="rounded-xl bg-white border border-slate-200 p-4 sm:p-5 space-y-3">
               <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-                {activeTask.type === "watch" && <Eye className="w-4 h-4 text-blue-600" />}
-                {activeTask.type === "exercise" && <Target className="w-4 h-4 text-amber-600" />}
-                {activeTask.type === "note" && <FileText className="w-4 h-4 text-emerald-600" />}
+                {activeTask.type === "watch" && <Eye className="w-4 h-4 text-blue-600 shrink-0" />}
+                {activeTask.type === "exercise" && <Target className="w-4 h-4 text-amber-600 shrink-0" />}
+                {activeTask.type === "note" && <FileText className="w-4 h-4 text-emerald-600 shrink-0" />}
                 {activeTask.title}
               </h3>
               {activeTask.description && (
@@ -583,10 +583,10 @@ export default function DayDetailPage() {
 
           {/* Recording Studio */}
           {activeTask && (activeTask.type === "record" || activeTask.type === "review") && !activeTask.completed && (
-            <div className="rounded-xl bg-white border border-slate-200 p-5 space-y-4">
-              <div className="flex items-center justify-between">
+            <div className="rounded-xl bg-white border border-slate-200 p-4 sm:p-5 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-                  <Mic className="w-4 h-4 text-red-600" /> Record: {activeTask.title}
+                  <Mic className="w-4 h-4 text-red-600 shrink-0" /> Record: {activeTask.title}
                 </h3>
                 <div className="flex gap-2">
                   <button
@@ -696,9 +696,9 @@ export default function DayDetailPage() {
 
           {/* Recordings List */}
           {recordings.length > 0 && (
-            <div className="rounded-xl bg-white border border-slate-200 p-5 space-y-4">
+            <div className="rounded-xl bg-white border border-slate-200 p-4 sm:p-5 space-y-4">
               <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-                <FileText className="w-4 h-4 text-indigo-600" /> Recordings ({recordings.length})
+                <FileText className="w-4 h-4 text-indigo-600 shrink-0" /> Recordings ({recordings.length})
               </h3>
               {recordings.map((rec) => {
                 const task = dayPlan?.tasks.find((t) => t.id === rec.taskId);
@@ -815,7 +815,7 @@ export default function DayDetailPage() {
                                 </h4>
 
                                 {/* Scores */}
-                                <div className="grid grid-cols-3 gap-2">
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                                   {[
                                     { label: "Overall", score: rec.aiReview.overallScore, color: "indigo" },
                                     { label: "Volume", score: rec.aiReview.volumeScore, color: "blue" },
@@ -891,7 +891,7 @@ export default function DayDetailPage() {
 
         {/* Right: Day Info */}
         <div className="space-y-4">
-          <div className="rounded-xl bg-white border border-slate-200 p-5">
+          <div className="rounded-xl bg-white border border-slate-200 p-4 sm:p-5">
             <h3 className="text-sm font-semibold text-slate-900 mb-3">Day Summary</h3>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
@@ -910,9 +910,9 @@ export default function DayDetailPage() {
           </div>
 
           {activeTask && (
-            <div className="rounded-xl bg-white border border-slate-200 p-5">
+            <div className="rounded-xl bg-white border border-slate-200 p-4 sm:p-5">
               <h3 className="text-sm font-semibold text-slate-900 mb-2 flex items-center gap-2">
-                <Target className="w-4 h-4 text-indigo-600" /> Active Task
+                <Target className="w-4 h-4 text-indigo-600 shrink-0" /> Active Task
               </h3>
               <p className="text-sm text-slate-900 font-medium">{activeTask.title}</p>
               {activeTask.description && (
@@ -924,9 +924,9 @@ export default function DayDetailPage() {
             </div>
           )}
 
-          <div className="rounded-xl bg-white border border-slate-200 p-5">
+          <div className="rounded-xl bg-white border border-slate-200 p-4 sm:p-5">
             <h3 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-yellow-600" /> Tips
+              <Sparkles className="w-4 h-4 text-yellow-600 shrink-0" /> Tips
             </h3>
             <ul className="space-y-2">
               {["Record in a quiet space", "Speak for 2-5 minutes", "Focus on one skill at a time", "Review your AI feedback carefully"].map((tip, i) => (
